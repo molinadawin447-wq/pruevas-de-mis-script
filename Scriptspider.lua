@@ -1,92 +1,81 @@
+-- LocalScript
 local Players = game:GetService("Players")
+
 local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
-player:WaitForChild("PlayerGui")
-
+-- GUI
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "BotonesGui"
-screenGui.Parent = player.PlayerGui
+screenGui.Name = "ElevenButtonsUI"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = playerGui
 
--- Configuración visual
-local buttonSize = 63
-local spacingH = 15   -- separación horizontal entre columnas
-local spacingV = 10   -- separación vertical entre botones de una misma columna
-local columnCounts = {1, 2, 4, 4}  -- número de botones por columna
-
--- Calcular alturas
-local columnHeights = {}
-local maxHeight = 0
-for _, count in ipairs(columnCounts) do
-    local h = count * buttonSize + (count - 1) * spacingV
-    table.insert(columnHeights, h)
-    if h > maxHeight then maxHeight = h end
-end
-
-local totalWidth = #columnCounts * buttonSize + (#columnCounts - 1) * spacingH
-local totalHeight = maxHeight
-
--- Contenedor principal (centrado)
+-- Contenedor principal
 local container = Instance.new("Frame")
-container.Name = "Container"
+container.Name = "ButtonsContainer"
+container.Size = UDim2.fromOffset(300, 150)
+container.Position = UDim2.fromScale(0.5, 0.5)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
 container.BackgroundTransparency = 1
-container.Size = UDim2.new(0, totalWidth, 0, totalHeight)
-container.Position = UDim2.new(0.5, -totalWidth/2, 0.5, -totalHeight/2)
 container.Parent = screenGui
 
--- Función que se ejecuta al hacer clic en un botón
-local function onButtonClick(buttonNumber)
-    -- Aquí pones lo que quieras que haga cada botón
-    print("Botón " .. buttonNumber .. " pulsado")
-    -- Por ejemplo, mostrar un mensaje en la pantalla (opcional)
-    -- (necesitarías un TextLabel creado previamente)
-end
+-- Configuración
+local buttonSize = 58
+local gapX = 8
+local gapY = 8
 
--- Crear las columnas
-local buttonCounter = 1
-for colIndex, count in ipairs(columnCounts) do
-    local colHeight = columnHeights[colIndex]
-    local colFrame = Instance.new("Frame")
-    colFrame.Name = "Columna" .. colIndex
-    colFrame.BackgroundTransparency = 1
-    colFrame.Size = UDim2.new(0, buttonSize, 0, colHeight)
-    colFrame.Position = UDim2.new(0, (colIndex-1)*(buttonSize + spacingH), 0.5, -colHeight/2)
-    colFrame.Parent = container
-    
-    for i = 1, count do
-        -- Botón
-        local button = Instance.new("ImageButton")
-        button.Name = "Boton" .. buttonCounter
-        button.Size = UDim2.new(0, buttonSize, 0, buttonSize)
-        
-        local yOffset = (colHeight - (count * buttonSize + (count-1)*spacingV)) / 2
-        local yPos = yOffset + (i-1) * (buttonSize + spacingV)
-        button.Position = UDim2.new(0, 0, 0, yPos)
-        
-        -- Color NEGRO
-        button.BackgroundColor3 = Color3.new(0, 0, 0)
+-- Cantidad de botones por columna
+local columns = {
+    1,
+    2,
+    4,
+    4
+}
+
+-- Crear botones
+for column = 1, 4 do
+
+    local amount = columns[column]
+
+    local columnFrame = Instance.new("Frame")
+    columnFrame.Name = "Column" .. column
+    columnFrame.Size = UDim2.fromOffset(buttonSize, amount * buttonSize + (amount - 1) * gapY)
+
+    -- Centrar verticalmente cada columna
+    columnFrame.Position = UDim2.fromOffset(
+        (column - 1) * (buttonSize + gapX),
+        (150 - columnFrame.Size.Y.Offset) / 2
+    )
+
+    columnFrame.BackgroundTransparency = 1
+    columnFrame.Parent = container
+
+    for i = 1, amount do
+
+        local button = Instance.new("TextButton")
+        button.Name = "Button_" .. column .. "_" .. i
+        button.Size = UDim2.fromOffset(buttonSize, buttonSize)
+
+        button.Position = UDim2.fromOffset(
+            0,
+            (i - 1) * (buttonSize + gapY)
+        )
+
+        -- Apariencia
+        button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
         button.BackgroundTransparency = 0
-        button.BorderSizePixel = 0   -- sin borde
-        button.AutoButtonColor = true
-        button.Text = ""   -- sin texto, o puedes poner el número si quieres
-        button.Image = ""
-        button.Parent = colFrame
-        
-        -- Hacerlo circular
+        button.BorderSizePixel = 0
+
+        -- Forma circular
         local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0.5, 0)
+        corner.CornerRadius = UDim.new(1, 0)
         corner.Parent = button
-        
-        -- Asignar evento click con el número correspondiente
-        local num = buttonCounter
-        button.MouseButton1Click:Connect(function()
-            onButtonClick(num)
-        end)
-        
-        buttonCounter = buttonCounter + 1
+
+        -- Texto
+        button.Text = ""
+        button.AutoButtonColor = true
+
+        button.Parent = columnFrame
     end
 end
-
--- (Opcional) Reposicionar si cambia el tamaño de la pantalla
-container:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-    container.Position = UDim2.new(0.5, -container.Size.X.Offset / 2, 0.5, -container.Size.Y.Offset / 2)
-end)
