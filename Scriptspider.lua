@@ -1,81 +1,76 @@
 -- LocalScript
+-- 4 columnas / 11 botones
+-- Columna 1 = 1 | Columna 2 = 2 | Columna 3 = 4 | Columna 4 = 4
+
 local Players = game:GetService("Players")
 
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
--- GUI
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "ElevenButtonsUI"
-screenGui.ResetOnSpawn = false
-screenGui.IgnoreGuiInset = true
-screenGui.Parent = playerGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MiHub"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.Parent = PlayerGui
 
--- Contenedor principal
-local container = Instance.new("Frame")
-container.Name = "ButtonsContainer"
-container.Size = UDim2.fromOffset(300, 150)
-container.Position = UDim2.fromScale(0.5, 0.5)
-container.AnchorPoint = Vector2.new(0.5, 0.5)
-container.BackgroundTransparency = 1
-container.Parent = screenGui
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Size = UDim2.fromOffset(290, 150)
+Main.Position = UDim2.fromScale(0.5, 0.5)
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.BackgroundTransparency = 1
+Main.Parent = ScreenGui
 
--- Configuración
-local buttonSize = 58
-local gapX = 8
-local gapY = 8
+local ButtonSize = 55
+local GapX = 9
+local GapY = 7
 
--- Cantidad de botones por columna
-local columns = {
-    1,
-    2,
-    4,
-    4
+local ColumnButtons = {
+	1,
+	2,
+	4,
+	4
 }
 
--- Crear botones
-for column = 1, 4 do
+for Column = 1, 4 do
 
-    local amount = columns[column]
+	local Amount = ColumnButtons[Column]
 
-    local columnFrame = Instance.new("Frame")
-    columnFrame.Name = "Column" .. column
-    columnFrame.Size = UDim2.fromOffset(buttonSize, amount * buttonSize + (amount - 1) * gapY)
+	local ColumnFrame = Instance.new("Frame")
+	ColumnFrame.Name = "Column" .. Column
+	ColumnFrame.Size = UDim2.fromOffset(
+		ButtonSize,
+		Amount * ButtonSize + (Amount - 1) * GapY
+	)
 
-    -- Centrar verticalmente cada columna
-    columnFrame.Position = UDim2.fromOffset(
-        (column - 1) * (buttonSize + gapX),
-        (150 - columnFrame.Size.Y.Offset) / 2
-    )
+	ColumnFrame.Position = UDim2.fromOffset(
+		(Column - 1) * (ButtonSize + GapX),
+		(150 - ColumnFrame.Size.Y.Offset) / 2
+	)
 
-    columnFrame.BackgroundTransparency = 1
-    columnFrame.Parent = container
+	ColumnFrame.BackgroundTransparency = 1
+	ColumnFrame.Parent = Main
 
-    for i = 1, amount do
+	for Number = 1, Amount do
 
-        local button = Instance.new("TextButton")
-        button.Name = "Button_" .. column .. "_" .. i
-        button.Size = UDim2.fromOffset(buttonSize, buttonSize)
+		local Button = Instance.new("TextButton")
+		Button.Name = "Button" .. Column .. "_" .. Number
+		Button.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
 
-        button.Position = UDim2.fromOffset(
-            0,
-            (i - 1) * (buttonSize + gapY)
-        )
+		Button.Position = UDim2.fromOffset(
+			0,
+			(Number - 1) * (ButtonSize + GapY)
+		)
 
-        -- Apariencia
-        button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-        button.BackgroundTransparency = 0
-        button.BorderSizePixel = 0
+		Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		Button.BorderSizePixel = 0
+		Button.Text = ""
+		Button.AutoButtonColor = true
 
-        -- Forma circular
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(1, 0)
-        corner.Parent = button
+		local Corner = Instance.new("UICorner")
+		Corner.CornerRadius = UDim.new(1, 0)
+		Corner.Parent = Button
 
-        -- Texto
-        button.Text = ""
-        button.AutoButtonColor = true
-
-        button.Parent = columnFrame
-    end
+		Button.Parent = ColumnFrame
+	end
 end
