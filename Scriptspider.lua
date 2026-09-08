@@ -1,11 +1,6 @@
 -- LocalScript
 -- 4 columnas / 11 botones
 -- Parte superior derecha
--- Distribución:
--- ■■■■
---    ■■■
---       ■■
---       ■■
 
 local Players = game:GetService("Players")
 
@@ -22,33 +17,31 @@ local Main = Instance.new("Frame")
 Main.Name = "Main"
 
 -- Tamaño del conjunto
-Main.Size = UDim2.fromOffset(330, 250)
+Main.Size = UDim2.fromOffset(355, 275)
 
--- Arriba a la derecha, con espacio
-Main.Position = UDim2.new(1, -25, 0, 25)
+-- Un poquito más hacia la derecha
+Main.Position = UDim2.new(1, -15, 0, 25)
 Main.AnchorPoint = Vector2.new(1, 0)
 
 Main.BackgroundTransparency = 1
 Main.Parent = ScreenGui
 
--- Botones un poquito más grandes
-local ButtonSize = 62
+-- Botones más grandes
+local ButtonSize = 68
 local GapX = 9
 local GapY = 7
 
--- Posiciones de las columnas
+-- Distribución:
+-- ■■■■
+--    ■■■
+--       ■■
+--       ■■
+
 local ColumnData = {
-	-- Columna 1
-	{Amount = 1, X = 0, Y = 0},
-
-	-- Columna 2
-	{Amount = 2, X = 71, Y = 0},
-
-	-- Columna 3
-	{Amount = 4, X = 142, Y = 0},
-
-	-- Columna 4
-	{Amount = 4, X = 213, Y = 0},
+	{Amount = 1, X = 0,   Y = 0},
+	{Amount = 2, X = 77,  Y = 0},
+	{Amount = 4, X = 154, Y = 0},
+	{Amount = 4, X = 231, Y = 0},
 }
 
 for Column = 1, 4 do
@@ -58,7 +51,6 @@ for Column = 1, 4 do
 	for Number = 1, Data.Amount do
 
 		local Button = Instance.new("TextButton")
-
 		Button.Name = "Button" .. Column .. "_" .. Number
 
 		Button.Size = UDim2.fromOffset(
@@ -76,7 +68,6 @@ for Column = 1, 4 do
 		Button.Text = ""
 		Button.AutoButtonColor = true
 
-		-- Redondos
 		local Corner = Instance.new("UICorner")
 		Corner.CornerRadius = UDim.new(1, 0)
 		Corner.Parent = Button
