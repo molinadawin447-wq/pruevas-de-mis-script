@@ -1,9 +1,15 @@
 -- LocalScript
--- Distribución: 1 / 2 / 4 / 4
--- 11 botones
--- Botones cuadrados con esquinas redondeadas
--- Bordes morados oscuros
--- Textos blancos, centrados y ajustados
+-- Distribución: nuevo botón + 2 / 4 / 4
+-- 11 botones en total
+-- Botón nuevo a la izquierda de la primera fila
+--
+-- 1_1 = blanco 30 minutos
+-- 1_2 = blanco 1 segundo
+-- 2_1 = blanco 30 minutos
+-- 2_2, 2_3, 2_4 = destello blanco
+-- 3_1 = blanco 30 minutos
+-- 3_2 = destello blanco
+-- 3_3, 3_4 = blanco 30 minutos
 
 local Players = game:GetService("Players")
 
@@ -19,10 +25,10 @@ ScreenGui.Parent = PlayerGui
 local Main = Instance.new("Frame")
 Main.Name = "Main"
 
--- 4 columnas x 60 + espacios
-Main.Size = UDim2.fromOffset(261, 245)
+-- Se amplía hacia la izquierda para colocar el nuevo botón
+Main.Size = UDim2.fromOffset(268, 245)
 
--- Pegado a la derecha con 7 px de separación
+-- Pegado a la derecha
 Main.Position = UDim2.new(1, -7, 0, 12)
 Main.AnchorPoint = Vector2.new(1, 0)
 
@@ -33,28 +39,23 @@ local ButtonSize = 60
 local GapX = 7
 local GapY = 6
 
--- 1 / 2 / 4 / 4
+-- Posición de las 3 columnas originales
 local ColumnData = {
-	{Amount = 1, X = 0},
 	{Amount = 2, X = 67},
 	{Amount = 4, X = 134},
 	{Amount = 4, X = 201},
 }
 
--- Textos de los botones
-local ButtonTexts = {
-	["1_1"] = "BAT\nV2",
+-- 30 minutos
+local WHITE_TIME = 1800
 
-	["2_1"] = "BYPASS\nAIMBOT",
-	["2_2"] = "INSTA\nRESET",
-}
+-- 1 segundo
+local SHORT_WHITE_TIME = 1
 
--- Botones que permanecen blancos 30 minutos
+-- Botones que permanecen blancos
 local LongWhiteButtons = {
 	["1_1"] = true,
-
 	["2_1"] = true,
-
 	["3_1"] = true,
 	["3_3"] = true,
 	["3_4"] = true,
@@ -63,16 +64,54 @@ local LongWhiteButtons = {
 -- Botones que hacen un destello blanco
 local FlashButtons = {
 	["2_2"] = true,
-
+	["2_3"] = true,
+	["2_4"] = true,
 	["3_2"] = true,
-	["3_3"] = false,
-	["3_4"] = false,
 }
 
-local WHITE_TIME = 1800
-local FLASH_TIME = 0.15
+-- FUNCIÓN PARA CREAR EL MISMO ESTILO DE BOTÓN
+local function ApplyButtonStyle(Button)
 
-for Column = 1, 4 do
+	Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Button.BorderSizePixel = 0
+	Button.Text = ""
+	Button.AutoButtonColor = true
+
+	-- Esquinas redondeadas
+	local Corner = Instance.new("UICorner")
+	Corner.CornerRadius = UDim.new(0, 10)
+	Corner.Parent = Button
+
+	-- Borde morado oscuro
+	local Stroke = Instance.new("UIStroke")
+	Stroke.Color = Color3.fromRGB(120, 50, 180)
+	Stroke.Thickness = 2
+	Stroke.Transparency = 0
+	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Stroke.Parent = Button
+end
+
+-- =========================================
+-- NUEVO BOTÓN A LA IZQUIERDA DE LA PRIMERA FILA
+-- =========================================
+
+local NewButton = Instance.new("TextButton")
+
+NewButton.Name = "NewButton"
+NewButton.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
+
+-- A la izquierda de la primera columna
+NewButton.Position = UDim2.fromOffset(0, 0)
+
+ApplyButtonStyle(NewButton)
+
+NewButton.Parent = Main
+
+-- =========================================
+-- COLUMNAS ORIGINALES
+-- =========================================
+
+for Column = 1, 3 do
 
 	local Data = ColumnData[Column]
 
@@ -88,43 +127,27 @@ for Column = 1, 4 do
 			(Number - 1) * (ButtonSize + GapY)
 		)
 
-		Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		Button.BorderSizePixel = 0
-		Button.Text = ButtonTexts[Column .. "_" .. Number] or ""
-		Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-		Button.TextSize = 13
-		Button.Font = Enum.Font.GothamBold
-		Button.TextWrapped = true
-		Button.TextScaled = false
-		Button.TextXAlignment = Enum.TextXAlignment.Center
-		Button.TextYAlignment = Enum.TextYAlignment.Center
-		Button.AutoButtonColor = true
-
-		-- Margen para que el texto nunca toque los bordes
-		Button.TextBounds = Vector2.new(50, 50)
-
-		-- Esquinas redondeadas
-		local Corner = Instance.new("UICorner")
-		Corner.CornerRadius = UDim.new(0, 10)
-		Corner.Parent = Button
-
-		-- Borde morado oscuro
-		local Stroke = Instance.new("UIStroke")
-		Stroke.Color = Color3.fromRGB(120, 50, 180)
-		Stroke.Thickness = 2
-		Stroke.Transparency = 0
-		Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-		Stroke.Parent = Button
+		ApplyButtonStyle(Button)
 
 		Button.Parent = Main
 
 		local Key = Column .. "_" .. Number
 
-		-- =========================
-		-- BOTONES DE 30 MINUTOS
-		-- =========================
+		-- BOTONES DE DESTELLO
+		if FlashButtons[Key] then
 
-		if LongWhiteButtons[Key] then
+			Button.Activated:Connect(function()
+
+				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+				task.wait(0.15)
+
+				Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+			end)
+
+		-- BOTONES DE 30 MINUTOS
+		elseif LongWhiteButtons[Key] then
 
 			local Active = false
 			local ActivationId = 0
@@ -133,6 +156,7 @@ for Column = 1, 4 do
 
 				-- Si está blanco, vuelve a negro
 				if Active then
+
 					Active = false
 					ActivationId += 1
 
@@ -151,28 +175,52 @@ for Column = 1, 4 do
 				task.delay(WHITE_TIME, function()
 
 					if Active and ActivationId == ThisActivation then
+
 						Active = false
 						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
 					end
 
 				end)
+
 			end)
 
-		-- =========================
-		-- BOTONES DE DESTELLO
-		-- =========================
+		-- BOTÓN 1_2: 1 SEGUNDO
+		elseif Key == "1_2" then
 
-		elseif FlashButtons[Key] then
+			local Active = false
+			local ActivationId = 0
 
 			Button.Activated:Connect(function()
 
-				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				if Active then
 
-				task.delay(FLASH_TIME, function()
+					Active = false
+					ActivationId += 1
 
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 
+					return
+				end
+
+				Active = true
+				ActivationId += 1
+
+				local ThisActivation = ActivationId
+
+				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+				task.delay(SHORT_WHITE_TIME, function()
+
+					if Active and ActivationId == ThisActivation then
+
+						Active = false
+						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+					end
+
 				end)
+
 			end)
 		end
 	end
