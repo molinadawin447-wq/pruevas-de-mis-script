@@ -1,6 +1,7 @@
 -- LocalScript
 -- 4 columnas / 11 botones
 -- Arriba a la derecha
+-- Botones 3_1 y 4_1: blanco durante 2 minutos
 
 local Players = game:GetService("Players")
 
@@ -16,24 +17,14 @@ ScreenGui.Parent = PlayerGui
 local Main = Instance.new("Frame")
 Main.Name = "Main"
 Main.Size = UDim2.fromOffset(330, 255)
-
--- Más arriba y más pegado a la derecha
 Main.Position = UDim2.new(1, -12, 0, 18)
 Main.AnchorPoint = Vector2.new(1, 0)
-
 Main.BackgroundTransparency = 1
 Main.Parent = ScreenGui
 
--- Un poquito más pequeños
 local ButtonSize = 63
 local GapX = 8
 local GapY = 6
-
--- Distribución:
--- ■■■■
---    ■■■
---       ■■
---       ■■
 
 local ColumnData = {
 	{Amount = 1, X = 0,   Y = 0},
@@ -50,7 +41,6 @@ for Column = 1, 4 do
 
 		local Button = Instance.new("TextButton")
 		Button.Name = "Button" .. Column .. "_" .. Number
-
 		Button.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
 
 		Button.Position = UDim2.fromOffset(
@@ -63,27 +53,46 @@ for Column = 1, 4 do
 		Button.Text = ""
 		Button.AutoButtonColor = true
 
-		-- Botón redondo
 		local Corner = Instance.new("UICorner")
 		Corner.CornerRadius = UDim.new(1, 0)
 		Corner.Parent = Button
 
 		Button.Parent = Main
 
-		-- Primer botón de columna 3 y 4:
-		-- negro <-> blanco al tocar
+		-- Primer botón de las columnas 3 y 4
 		if (Column == 3 or Column == 4) and Number == 1 then
 
 			local Active = false
+			local ActivationId = 0
 
 			Button.Activated:Connect(function()
-				Active = not Active
 
+				-- Si ya está activo, lo apaga
 				if Active then
-					Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				else
+					Active = false
+					ActivationId += 1
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+					return
 				end
+
+				-- Lo activa
+				Active = true
+				ActivationId += 1
+
+				local ThisActivation = ActivationId
+
+				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+				-- Después de 2 minutos vuelve a normal
+				task.delay(120, function()
+
+					-- Solo cambia si sigue siendo la misma activación
+					if Active and ActivationId == ThisActivation then
+						Active = false
+						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+					end
+
+				end)
 			end)
 		end
 	end
