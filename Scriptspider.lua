@@ -1,10 +1,10 @@
 -- LocalScript
--- Distribución: 1 + 2 + 4 + 4 = 11 botones en total
+-- Distribución: 1 + 2 + 3 + 4 = 10 botones en total
 --
 -- Columna 1 (X=0)   : BAT BYPASS
 -- Columna 2 (X=67)  : ANTI DESYNC / RESET
--- Columna 3 (X=134) : DROP BR / BAT AIMBOT / TP DOWN / LAGGER 1
--- Columna 4 (X=201) : AUTO LEFT / AUTO RIGHT / CARRY SPD / LAGGER 2
+-- Columna 3 (X=134) : DROP BR / BAT AIMBOT / TP DOWN
+-- Columna 4 (X=201) : AUTO LEFT / AUTO RIGHT / CARRY SPD / LAGGER OFF-ON
 
 local Players = game:GetService("Players")
 
@@ -39,11 +39,11 @@ local TEXT_STROKE_THICKNESS = 2
 local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
--- Columnas
+-- Columnas (columna 3 ahora tiene 3 botones)
 local ColumnData = {
 	{Amount = 1, X = 0},
 	{Amount = 2, X = 67},
-	{Amount = 4, X = 134},
+	{Amount = 3, X = 134},
 	{Amount = 4, X = 201},
 }
 
@@ -62,36 +62,33 @@ local ButtonLabels = {
 	["3_1"] = {"DROP", "BR"},
 	["3_2"] = {"BAT", "AIMBOT"},
 	["3_3"] = {"TP", "DOWN"},
-	["3_4"] = {"LAGGER", "1"},
 
 	["4_1"] = {"AUTO", "LEFT"},
 	["4_2"] = {"AUTO", "RIGHT"},
 	["4_3"] = {"CARRY", "SPD"},
-	["4_4"] = {"LAGGER", "2"},
+	["4_4"] = {"LAGGER", "OFF"},   -- cambia a ON cuando se activa
 }
 
 -- =========================================
 -- COMPORTAMIENTOS
 -- =========================================
 
--- Toggle 30 minutos (antes solo tenía BAT BYPASS, ANTI DESYNC, LAGGER 1, LAGGER 2)
--- Ahora también: AUTO LEFT, AUTO RIGHT, BAT AIMBOT, CARRY SPD
+-- Toggle 30 minutos
 local LongWhiteButtons = {
 	["1_1"] = true,   -- BAT BYPASS
 	["2_1"] = true,   -- ANTI DESYNC
-	["3_2"] = true,   -- BAT AIMBOT (nuevo)
-	["3_4"] = true,   -- LAGGER 1
-	["4_1"] = true,   -- AUTO LEFT (nuevo)
-	["4_2"] = true,   -- AUTO RIGHT (nuevo)
-	["4_3"] = true,   -- CARRY SPD (nuevo)
-	["4_4"] = true,   -- LAGGER 2
+	["3_2"] = true,   -- BAT AIMBOT
+	["4_1"] = true,   -- AUTO LEFT
+	["4_2"] = true,   -- AUTO RIGHT
+	["4_3"] = true,   -- CARRY SPD
+	["4_4"] = true,   -- LAGGER OFF/ON
 }
 
 -- Destello blanco de 0,10 segundos
 local Flash010Buttons = {
-	["2_2"] = true,   -- RESET (nuevo)
-	["3_1"] = true,   -- DROP BR (nuevo)
-	["3_3"] = true,   -- TP DOWN (nuevo)
+	["2_2"] = true,   -- RESET
+	["3_1"] = true,   -- DROP BR
+	["3_3"] = true,   -- TP DOWN
 }
 
 -- FUNCIÓN PARA CREAR EL MISMO ESTILO DEL BOTÓN
@@ -131,7 +128,13 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 	Button.TextYAlignment = Enum.TextYAlignment.Center
 	Button.TextScaled = false
 
+	-- Solo crear el contorno si no existe ya
+	if not Button:FindFirstChildOfClass("UIStroke") or not Button:FindFirstChild("TextStroke") then
+		-- (el UIStroke del borde ya existe; este es para las letras)
+	end
+
 	local TextStroke = Instance.new("UIStroke")
+	TextStroke.Name = "TextStroke"
 	TextStroke.Color = TEXT_STROKE_COLOR
 	TextStroke.Thickness = TEXT_STROKE_THICKNESS
 	TextStroke.Transparency = 0
@@ -195,6 +198,12 @@ for Column = 1, 4 do
 					Active = false
 					ActivationId += 1
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+					-- Si es el botón LAGGER, volver a "OFF"
+					if Key == "4_4" then
+						Button.Text = "LAGGER\nOFF"
+					end
+
 					return
 				end
 
@@ -205,10 +214,20 @@ for Column = 1, 4 do
 
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
+				-- Si es el botón LAGGER, cambiar a "ON"
+				if Key == "4_4" then
+					Button.Text = "LAGGER\nON"
+				end
+
 				task.delay(WHITE_TIME, function()
 					if Active and ActivationId == ThisActivation then
 						Active = false
 						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+						-- Si es el botón LAGGER, volver a "OFF"
+						if Key == "4_4" then
+							Button.Text = "LAGGER\nOFF"
+						end
 					end
 				end)
 
