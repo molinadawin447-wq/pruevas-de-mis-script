@@ -33,9 +33,9 @@ local GapY = 6
 -- =========================================
 -- ESTILO DE TEXTO ÚNICO (mismo grueso para TODOS)
 -- =========================================
-local TEXT_FONT = Enum.Font.GothamBold     -- misma fuente
-local TEXT_SIZE = 13                       -- mismo tamaño/grueso
-local TEXT_STROKE_THICKNESS = 2            -- mismo contorno
+local TEXT_FONT = Enum.Font.GothamBold
+local TEXT_SIZE = 13
+local TEXT_STROKE_THICKNESS = 2
 local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
@@ -47,10 +47,12 @@ local ColumnData = {
 	{Amount = 4, X = 201},
 }
 
-local WHITE_TIME = 1800
-local SHORT_WHITE_TIME = 1
+-- Tiempos
+local WHITE_TIME = 1800          -- 30 minutos
+local SHORT_WHITE_TIME = 1       -- 1 segundo
+local FLASH_010_TIME = 0.10      -- 0,10 segundos
 
--- Texto de cada botón (dos líneas)
+-- Texto de cada botón
 local ButtonLabels = {
 	["1_1"] = {"BAT", "BYPASS"},
 
@@ -68,23 +70,28 @@ local ButtonLabels = {
 	["4_4"] = {"LAGGER", "2"},
 }
 
--- Botones que permanecen blancos 30 minutos
+-- =========================================
+-- COMPORTAMIENTOS
+-- =========================================
+
+-- Toggle 30 minutos (antes solo tenía BAT BYPASS, ANTI DESYNC, LAGGER 1, LAGGER 2)
+-- Ahora también: AUTO LEFT, AUTO RIGHT, BAT AIMBOT, CARRY SPD
 local LongWhiteButtons = {
-	["1_1"] = true,
-	["2_1"] = true,
-	["3_1"] = true,
-	["3_4"] = true,
-	["4_4"] = true,
+	["1_1"] = true,   -- BAT BYPASS
+	["2_1"] = true,   -- ANTI DESYNC
+	["3_2"] = true,   -- BAT AIMBOT (nuevo)
+	["3_4"] = true,   -- LAGGER 1
+	["4_1"] = true,   -- AUTO LEFT (nuevo)
+	["4_2"] = true,   -- AUTO RIGHT (nuevo)
+	["4_3"] = true,   -- CARRY SPD (nuevo)
+	["4_4"] = true,   -- LAGGER 2
 }
 
--- Botones que hacen destello blanco (0,15 s)
-local FlashButtons = {
-	["2_2"] = true,
-	["3_2"] = true,
-	["3_3"] = true,
-	["4_1"] = true,
-	["4_2"] = true,
-	["4_3"] = true,
+-- Destello blanco de 0,10 segundos
+local Flash010Buttons = {
+	["2_2"] = true,   -- RESET (nuevo)
+	["3_1"] = true,   -- DROP BR (nuevo)
+	["3_3"] = true,   -- TP DOWN (nuevo)
 }
 
 -- FUNCIÓN PARA CREAR EL MISMO ESTILO DEL BOTÓN
@@ -107,7 +114,7 @@ local function ApplyButtonStyle(Button)
 	Stroke.Parent = Button
 end
 
--- FUNCIÓN PARA APLICAR TEXTO (siempre con el MISMO grueso)
+-- FUNCIÓN PARA APLICAR TEXTO (mismo grueso siempre)
 local function ApplyTwoLineText(Button, Line1, Line2)
 
 	if Line2 == nil or Line2 == "" then
@@ -116,7 +123,6 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 		Button.Text = Line1 .. "\n" .. Line2
 	end
 
-	-- Propiedades fijas tomadas de las constantes de arriba
 	Button.TextColor3 = TEXT_COLOR
 	Button.Font = TEXT_FONT
 	Button.TextSize = TEXT_SIZE
@@ -125,7 +131,6 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 	Button.TextYAlignment = Enum.TextYAlignment.Center
 	Button.TextScaled = false
 
-	-- Contorno negro del mismo grosor en todos
 	local TextStroke = Instance.new("UIStroke")
 	TextStroke.Color = TEXT_STROKE_COLOR
 	TextStroke.Thickness = TEXT_STROKE_THICKNESS
@@ -162,22 +167,22 @@ for Column = 1, 4 do
 
 		local Key = Column .. "_" .. Number
 
-		-- Aplicar el texto que corresponde
+		-- Texto del botón
 		local Label = ButtonLabels[Key]
 		if Label then
 			ApplyTwoLineText(Button, Label[1], Label[2])
 		end
 
-		-- BOTONES DE DESTELLO
-		if FlashButtons[Key] then
+		-- DESTELLO BLANCO 0,10 s (RESET, DROP BR, TP DOWN)
+		if Flash010Buttons[Key] then
 
 			Button.Activated:Connect(function()
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				task.wait(0.15)
+				task.wait(FLASH_010_TIME)
 				Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 			end)
 
-		-- BOTONES DE 30 MINUTOS
+		-- TOGGLE 30 MINUTOS
 		elseif LongWhiteButtons[Key] then
 
 			local Active = false
@@ -186,12 +191,14 @@ for Column = 1, 4 do
 			Button.Activated:Connect(function()
 
 				if Active then
+					-- Segundo toque antes de los 30 min → vuelve a negro
 					Active = false
 					ActivationId += 1
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 					return
 				end
 
+				-- Primer toque → blanco 30 min
 				Active = true
 				ActivationId += 1
 				local ThisActivation = ActivationId
