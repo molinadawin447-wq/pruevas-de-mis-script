@@ -1,7 +1,8 @@
 -- LocalScript
--- 4 columnas / 11 botones
--- Arriba a la derecha
--- Botones 3_1 y 4_1: blanco durante 2 minutos
+-- Distribución: 1 / 2 / 4 / 4
+-- Los 2 botones de la columna 2:
+-- Blanco durante 30 minutos
+-- Tocarlos nuevamente = vuelve a negro
 
 local Players = game:GetService("Players")
 
@@ -16,21 +17,40 @@ ScreenGui.Parent = PlayerGui
 
 local Main = Instance.new("Frame")
 Main.Name = "Main"
-Main.Size = UDim2.fromOffset(330, 255)
-Main.Position = UDim2.new(1, -12, 0, 18)
+Main.Size = UDim2.fromOffset(315, 245)
+
+-- Arriba a la derecha con un pequeño espacio
+Main.Position = UDim2.new(1, -7, 0, 12)
 Main.AnchorPoint = Vector2.new(1, 0)
+
 Main.BackgroundTransparency = 1
 Main.Parent = ScreenGui
 
-local ButtonSize = 63
-local GapX = 8
+local ButtonSize = 60
+local GapX = 7
 local GapY = 6
 
+-- 1 / 2 / 4 / 4
 local ColumnData = {
 	{Amount = 1, X = 0,   Y = 0},
-	{Amount = 2, X = 71,  Y = 0},
-	{Amount = 4, X = 142, Y = 0},
-	{Amount = 4, X = 213, Y = 0},
+	{Amount = 2, X = 67,  Y = 0},
+	{Amount = 4, X = 134, Y = 0},
+	{Amount = 4, X = 201, Y = 0},
+}
+
+-- 30 minutos = 1800 segundos
+local WHITE_TIME = 1800
+
+-- Botones que tienen la función de 30 minutos
+local SpecialButtons = {
+	["1_1"] = true,
+
+	-- Los DOS botones de la columna 2
+	["2_1"] = true,
+	["2_2"] = true,
+
+	["3_1"] = true,
+	["4_1"] = true,
 }
 
 for Column = 1, 4 do
@@ -40,6 +60,7 @@ for Column = 1, 4 do
 	for Number = 1, Data.Amount do
 
 		local Button = Instance.new("TextButton")
+
 		Button.Name = "Button" .. Column .. "_" .. Number
 		Button.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
 
@@ -53,29 +74,34 @@ for Column = 1, 4 do
 		Button.Text = ""
 		Button.AutoButtonColor = true
 
+		-- Botón redondo
 		local Corner = Instance.new("UICorner")
 		Corner.CornerRadius = UDim.new(1, 0)
 		Corner.Parent = Button
 
 		Button.Parent = Main
 
-		-- Primer botón de las columnas 3 y 4
-		if (Column == 3 or Column == 4) and Number == 1 then
+		local Key = Column .. "_" .. Number
+
+		-- Función de 30 minutos
+		if SpecialButtons[Key] then
 
 			local Active = false
 			local ActivationId = 0
 
 			Button.Activated:Connect(function()
 
-				-- Si ya está activo, lo apaga
+				-- Si está blanco, vuelve a negro
 				if Active then
 					Active = false
 					ActivationId += 1
+
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
 					return
 				end
 
-				-- Lo activa
+				-- Activar
 				Active = true
 				ActivationId += 1
 
@@ -83,10 +109,9 @@ for Column = 1, 4 do
 
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
-				-- Después de 2 minutos vuelve a normal
-				task.delay(120, function()
+				-- Después de 30 minutos vuelve automáticamente
+				task.delay(WHITE_TIME, function()
 
-					-- Solo cambia si sigue siendo la misma activación
 					if Active and ActivationId == ThisActivation then
 						Active = false
 						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
