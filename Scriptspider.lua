@@ -1,8 +1,9 @@
 -- LocalScript
 -- Distribución: 2 / 4 / 4
--- Columna 1 = antigua columna 2
--- Columna 2 = antigua columna 3
--- Columna 3 = antigua columna 4
+-- 10 botones
+-- Pegados a la derecha con 7 px de margen
+-- Botón 1_2: blanco durante 1 segundo
+-- Otros botones especiales: blanco durante 30 minutos
 
 local Players = game:GetService("Players")
 
@@ -17,8 +18,11 @@ ScreenGui.Parent = PlayerGui
 
 local Main = Instance.new("Frame")
 Main.Name = "Main"
-Main.Size = UDim2.fromOffset(315, 245)
 
+-- Tamaño suficiente para las 3 columnas
+Main.Size = UDim2.fromOffset(201, 245)
+
+-- Extremo derecho con 7 px de separación
 Main.Position = UDim2.new(1, -7, 0, 12)
 Main.AnchorPoint = Vector2.new(1, 0)
 
@@ -29,16 +33,17 @@ local ButtonSize = 60
 local GapX = 7
 local GapY = 6
 
+-- 2 / 4 / 4
 local ColumnData = {
 	{Amount = 2, X = 0,   Y = 0},
 	{Amount = 4, X = 67,  Y = 0},
 	{Amount = 4, X = 134, Y = 0},
 }
 
--- Duración normal: 30 minutos
+-- 30 minutos
 local WHITE_TIME = 1800
 
--- Duración especial del botón 1_2: 1 segundo
+-- Botón 1_2 dura solamente 1 segundo
 local SHORT_WHITE_TIME = 1
 
 local SpecialButtons = {
@@ -103,6 +108,7 @@ for Column = 1, 3 do
 					return
 				end
 
+				-- Activar
 				Active = true
 				ActivationId += 1
 
@@ -110,8 +116,7 @@ for Column = 1, 3 do
 
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
-				-- 1_2 dura 1 segundo
-				-- Los demás duran 30 minutos
+				-- Elegir duración
 				local Duration = WHITE_TIME
 
 				if Key == "1_2" then
