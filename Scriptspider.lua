@@ -1,7 +1,7 @@
 -- LocalScript
 -- Distribución: 1 / 2 / 4 / 4
 -- Botones cuadrados con esquinas redondeadas
--- Bordes morados claros brillantes
+-- Bordes morados oscuros
 
 local Players = game:GetService("Players")
 
@@ -28,7 +28,6 @@ local ButtonSize = 60
 local GapX = 7
 local GapY = 6
 
--- 1 / 2 / 4 / 4
 local ColumnData = {
 	{Amount = 1, X = 0,   Y = 0},
 	{Amount = 2, X = 67,  Y = 0},
@@ -36,15 +35,12 @@ local ColumnData = {
 	{Amount = 4, X = 201, Y = 0},
 }
 
--- 30 minutos
 local WHITE_TIME = 1800
 
 local SpecialButtons = {
 	["1_1"] = true,
-
 	["2_1"] = true,
 	["2_2"] = true,
-
 	["3_1"] = true,
 	["4_1"] = true,
 }
@@ -75,9 +71,9 @@ for Column = 1, 4 do
 		Corner.CornerRadius = UDim.new(0, 10)
 		Corner.Parent = Button
 
-		-- Borde morado claro brillante
+		-- Borde morado oscuro
 		local Stroke = Instance.new("UIStroke")
-		Stroke.Color = Color3.fromRGB(210, 150, 255)
+		Stroke.Color = Color3.fromRGB(120, 50, 180)
 		Stroke.Thickness = 2
 		Stroke.Transparency = 0
 		Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
@@ -87,7 +83,6 @@ for Column = 1, 4 do
 
 		local Key = Column .. "_" .. Number
 
-		-- Función de 30 minutos
 		if SpecialButtons[Key] then
 
 			local Active = false
@@ -95,17 +90,13 @@ for Column = 1, 4 do
 
 			Button.Activated:Connect(function()
 
-				-- Si está blanco, vuelve a negro
 				if Active then
 					Active = false
 					ActivationId += 1
-
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-
 					return
 				end
 
-				-- Activar
 				Active = true
 				ActivationId += 1
 
@@ -113,7 +104,6 @@ for Column = 1, 4 do
 
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
-				-- Después de 30 minutos vuelve automáticamente
 				task.delay(WHITE_TIME, function()
 
 					if Active and ActivationId == ThisActivation then
