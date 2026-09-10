@@ -10,6 +10,7 @@
 -- 3_1 = blanco 30 minutos
 -- 3_2 = destello blanco
 -- 3_3, 3_4 = blanco 30 minutos
+-- NuevoButton = destello blanco 0,15 segundos
 
 local Players = game:GetService("Players")
 
@@ -25,7 +26,7 @@ ScreenGui.Parent = PlayerGui
 local Main = Instance.new("Frame")
 Main.Name = "Main"
 
--- Se amplía hacia la izquierda para colocar el nuevo botón
+-- Espacio para el nuevo botón de la izquierda
 Main.Size = UDim2.fromOffset(268, 245)
 
 -- Pegado a la derecha
@@ -39,7 +40,7 @@ local ButtonSize = 60
 local GapX = 7
 local GapY = 6
 
--- Posición de las 3 columnas originales
+-- Columnas originales
 local ColumnData = {
 	{Amount = 2, X = 67},
 	{Amount = 4, X = 134},
@@ -69,7 +70,7 @@ local FlashButtons = {
 	["3_2"] = true,
 }
 
--- FUNCIÓN PARA CREAR EL MISMO ESTILO DE BOTÓN
+-- FUNCIÓN PARA CREAR EL MISMO ESTILO
 local function ApplyButtonStyle(Button)
 
 	Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -92,20 +93,29 @@ local function ApplyButtonStyle(Button)
 end
 
 -- =========================================
--- NUEVO BOTÓN A LA IZQUIERDA DE LA PRIMERA FILA
+-- NUEVO BOTÓN A LA IZQUIERDA
 -- =========================================
 
 local NewButton = Instance.new("TextButton")
 
 NewButton.Name = "NewButton"
 NewButton.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
-
--- A la izquierda de la primera columna
 NewButton.Position = UDim2.fromOffset(0, 0)
 
 ApplyButtonStyle(NewButton)
 
 NewButton.Parent = Main
+
+-- Al tocarlo se pone blanco durante 0,15 segundos
+NewButton.Activated:Connect(function()
+
+	NewButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+	task.wait(0.15)
+
+	NewButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+end)
 
 -- =========================================
 -- COLUMNAS ORIGINALES
@@ -154,7 +164,6 @@ for Column = 1, 3 do
 
 			Button.Activated:Connect(function()
 
-				-- Si está blanco, vuelve a negro
 				if Active then
 
 					Active = false
