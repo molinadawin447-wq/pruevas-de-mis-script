@@ -1,9 +1,15 @@
 -- LocalScript
 -- Distribución: 2 / 4 / 4
 -- 10 botones
--- Pegados a la derecha con 7 px de margen
--- Botón 1_2: blanco durante 1 segundo
--- Otros botones especiales: blanco durante 30 minutos
+-- Botones al extremo derecho
+--
+-- 1_1 = blanco 30 minutos
+-- 1_2 = blanco 1 segundo
+-- 2_1 = blanco 30 minutos
+-- 2_2, 2_3, 2_4 = destello blanco
+-- 3_1 = blanco 30 minutos
+-- 3_2 = destello blanco
+-- 3_3, 3_4 = blanco 30 minutos
 
 local Players = game:GetService("Players")
 
@@ -18,11 +24,9 @@ ScreenGui.Parent = PlayerGui
 
 local Main = Instance.new("Frame")
 Main.Name = "Main"
-
--- Tamaño suficiente para las 3 columnas
 Main.Size = UDim2.fromOffset(201, 245)
 
--- Extremo derecho con 7 px de separación
+-- Pegado a la derecha con 7 px de separación
 Main.Position = UDim2.new(1, -7, 0, 12)
 Main.AnchorPoint = Vector2.new(1, 0)
 
@@ -35,22 +39,32 @@ local GapY = 6
 
 -- 2 / 4 / 4
 local ColumnData = {
-	{Amount = 2, X = 0,   Y = 0},
-	{Amount = 4, X = 67,  Y = 0},
-	{Amount = 4, X = 134, Y = 0},
+	{Amount = 2, X = 0},
+	{Amount = 4, X = 67},
+	{Amount = 4, X = 134},
 }
 
 -- 30 minutos
 local WHITE_TIME = 1800
 
--- Botón 1_2 dura solamente 1 segundo
+-- 1 segundo
 local SHORT_WHITE_TIME = 1
 
-local SpecialButtons = {
+-- Botones que permanecen blancos
+local LongWhiteButtons = {
 	["1_1"] = true,
-	["1_2"] = true,
 	["2_1"] = true,
 	["3_1"] = true,
+	["3_3"] = true,
+	["3_4"] = true,
+}
+
+-- Botones que hacen un destello blanco
+local FlashButtons = {
+	["2_2"] = true,
+	["2_3"] = true,
+	["2_4"] = true,
+	["3_2"] = true,
 }
 
 for Column = 1, 3 do
@@ -66,7 +80,7 @@ for Column = 1, 3 do
 
 		Button.Position = UDim2.fromOffset(
 			Data.X,
-			Data.Y + (Number - 1) * (ButtonSize + GapY)
+			(Number - 1) * (ButtonSize + GapY)
 		)
 
 		Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -91,7 +105,22 @@ for Column = 1, 3 do
 
 		local Key = Column .. "_" .. Number
 
-		if SpecialButtons[Key] then
+		-- BOTONES DE DESTELLO
+		if FlashButtons[Key] then
+
+			Button.Activated:Connect(function()
+
+				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+				-- Destello rápido
+				task.wait(0.15)
+
+				Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+			end)
+
+		-- BOTONES DE 30 MINUTOS
+		elseif LongWhiteButtons[Key] then
 
 			local Active = false
 			local ActivationId = 0
@@ -108,7 +137,6 @@ for Column = 1, 3 do
 					return
 				end
 
-				-- Activar
 				Active = true
 				ActivationId += 1
 
@@ -116,14 +144,7 @@ for Column = 1, 3 do
 
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
-				-- Elegir duración
-				local Duration = WHITE_TIME
-
-				if Key == "1_2" then
-					Duration = SHORT_WHITE_TIME
-				end
-
-				task.delay(Duration, function()
+				task.delay(WHITE_TIME, function()
 
 					if Active and ActivationId == ThisActivation then
 						Active = false
@@ -131,6 +152,42 @@ for Column = 1, 3 do
 					end
 
 				end)
+
+			end)
+
+		-- BOTÓN 1_2: 1 SEGUNDO
+		elseif Key == "1_2" then
+
+			local Active = false
+			local ActivationId = 0
+
+			Button.Activated:Connect(function()
+
+				if Active then
+					Active = false
+					ActivationId += 1
+
+					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+					return
+				end
+
+				Active = true
+				ActivationId += 1
+
+				local ThisActivation = ActivationId
+
+				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+				task.delay(SHORT_WHITE_TIME, function()
+
+					if Active and ActivationId == ThisActivation then
+						Active = false
+						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+					end
+
+				end)
+
 			end)
 		end
 	end
