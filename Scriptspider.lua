@@ -1,7 +1,8 @@
 -- LocalScript
--- Distribución: 1 / 2 / 4 / 4
--- Botones cuadrados con esquinas redondeadas
--- Bordes morados oscuros
+-- Distribución: 2 / 4 / 4
+-- Columna 1 = antigua columna 2
+-- Columna 2 = antigua columna 3
+-- Columna 3 = antigua columna 4
 
 local Players = game:GetService("Players")
 
@@ -29,23 +30,25 @@ local GapX = 7
 local GapY = 6
 
 local ColumnData = {
-	{Amount = 1, X = 0,   Y = 0},
-	{Amount = 2, X = 67,  Y = 0},
+	{Amount = 2, X = 0,   Y = 0},
+	{Amount = 4, X = 67,  Y = 0},
 	{Amount = 4, X = 134, Y = 0},
-	{Amount = 4, X = 201, Y = 0},
 }
 
+-- Duración normal: 30 minutos
 local WHITE_TIME = 1800
+
+-- Duración especial del botón 1_2: 1 segundo
+local SHORT_WHITE_TIME = 1
 
 local SpecialButtons = {
 	["1_1"] = true,
+	["1_2"] = true,
 	["2_1"] = true,
-	["2_2"] = true,
 	["3_1"] = true,
-	["4_1"] = true,
 }
 
-for Column = 1, 4 do
+for Column = 1, 3 do
 
 	local Data = ColumnData[Column]
 
@@ -90,10 +93,13 @@ for Column = 1, 4 do
 
 			Button.Activated:Connect(function()
 
+				-- Si está blanco, vuelve a negro
 				if Active then
 					Active = false
 					ActivationId += 1
+
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
 					return
 				end
 
@@ -104,7 +110,15 @@ for Column = 1, 4 do
 
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
-				task.delay(WHITE_TIME, function()
+				-- 1_2 dura 1 segundo
+				-- Los demás duran 30 minutos
+				local Duration = WHITE_TIME
+
+				if Key == "1_2" then
+					Duration = SHORT_WHITE_TIME
+				end
+
+				task.delay(Duration, function()
 
 					if Active and ActivationId == ThisActivation then
 						Active = false
