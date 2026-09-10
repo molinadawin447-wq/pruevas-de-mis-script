@@ -1,16 +1,6 @@
 -- LocalScript
 -- Distribución: nuevo botón + 2 / 4 / 4
 -- 11 botones en total
--- Botón nuevo a la izquierda de la primera fila
---
--- 1_1 = blanco 30 minutos
--- 1_2 = blanco 1 segundo
--- 2_1 = blanco 30 minutos
--- 2_2, 2_3, 2_4 = destello blanco
--- 3_1 = blanco 30 minutos
--- 3_2 = destello blanco
--- 3_3, 3_4 = blanco 30 minutos
--- NuevoButton = destello blanco 0,15 segundos
 
 local Players = game:GetService("Players")
 
@@ -25,14 +15,9 @@ ScreenGui.Parent = PlayerGui
 
 local Main = Instance.new("Frame")
 Main.Name = "Main"
-
--- Espacio para el nuevo botón de la izquierda
 Main.Size = UDim2.fromOffset(268, 245)
-
--- Pegado a la derecha
 Main.Position = UDim2.new(1, -7, 0, 12)
 Main.AnchorPoint = Vector2.new(1, 0)
-
 Main.BackgroundTransparency = 1
 Main.Parent = ScreenGui
 
@@ -40,20 +25,15 @@ local ButtonSize = 60
 local GapX = 7
 local GapY = 6
 
--- Columnas originales
 local ColumnData = {
 	{Amount = 2, X = 67},
 	{Amount = 4, X = 134},
 	{Amount = 4, X = 201},
 }
 
--- 30 minutos
 local WHITE_TIME = 1800
-
--- 1 segundo
 local SHORT_WHITE_TIME = 1
 
--- Botones que permanecen blancos
 local LongWhiteButtons = {
 	["1_1"] = true,
 	["2_1"] = true,
@@ -62,7 +42,6 @@ local LongWhiteButtons = {
 	["3_4"] = true,
 }
 
--- Botones que hacen un destello blanco
 local FlashButtons = {
 	["2_2"] = true,
 	["2_3"] = true,
@@ -70,13 +49,36 @@ local FlashButtons = {
 	["3_2"] = true,
 }
 
--- FUNCIÓN PARA CREAR EL MISMO ESTILO
+-- =========================================
+-- ESTILO DE LOS BOTONES
+-- =========================================
+
 local function ApplyButtonStyle(Button)
 
 	Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	Button.BorderSizePixel = 0
 	Button.Text = ""
+	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Button.Font = Enum.Font.GothamBold
+	Button.TextScaled = true
 	Button.AutoButtonColor = true
+
+	-- Espacio interno para que el texto no quede pegado
+	Button.TextXAlignment = Enum.TextXAlignment.Center
+	Button.TextYAlignment = Enum.TextYAlignment.Center
+
+	local Padding = Instance.new("UIPadding")
+	Padding.PaddingLeft = UDim.new(0, 6)
+	Padding.PaddingRight = UDim.new(0, 6)
+	Padding.PaddingTop = UDim.new(0, 6)
+	Padding.PaddingBottom = UDim.new(0, 6)
+	Padding.Parent = Button
+
+	-- Limita el tamaño máximo de las letras
+	local TextConstraint = Instance.new("UITextSizeConstraint")
+	TextConstraint.MinTextSize = 8
+	TextConstraint.MaxTextSize = 16
+	TextConstraint.Parent = Button
 
 	-- Esquinas redondeadas
 	local Corner = Instance.new("UICorner")
@@ -93,7 +95,7 @@ local function ApplyButtonStyle(Button)
 end
 
 -- =========================================
--- NUEVO BOTÓN A LA IZQUIERDA
+-- NUEVO BOTÓN
 -- =========================================
 
 local NewButton = Instance.new("TextButton")
@@ -106,7 +108,7 @@ ApplyButtonStyle(NewButton)
 
 NewButton.Parent = Main
 
--- Al tocarlo se pone blanco durante 0,15 segundos
+-- Destello blanco de 0,15 segundos
 NewButton.Activated:Connect(function()
 
 	NewButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -118,7 +120,7 @@ NewButton.Activated:Connect(function()
 end)
 
 -- =========================================
--- COLUMNAS ORIGINALES
+-- COLUMNAS
 -- =========================================
 
 for Column = 1, 3 do
@@ -130,7 +132,11 @@ for Column = 1, 3 do
 		local Button = Instance.new("TextButton")
 
 		Button.Name = "Button" .. Column .. "_" .. Number
-		Button.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
+
+		Button.Size = UDim2.fromOffset(
+			ButtonSize,
+			ButtonSize
+		)
 
 		Button.Position = UDim2.fromOffset(
 			Data.X,
@@ -143,7 +149,34 @@ for Column = 1, 3 do
 
 		local Key = Column .. "_" .. Number
 
+		-- =====================================
+		-- TEXTOS
+		-- =====================================
+
+		if Key == "1_1" then
+
+			-- BAT
+			-- V2 debajo
+			Button.Text = "BAT\nV2"
+
+		elseif Key == "2_1" then
+
+			-- BYPASS
+			-- AIMBOT debajo
+			Button.Text = "BYPASS\nAIMBOT"
+
+		elseif Key == "2_2" then
+
+			-- INSTA
+			-- RESET debajo
+			Button.Text = "INSTA\nRESET"
+
+		end
+
+		-- =====================================
 		-- BOTONES DE DESTELLO
+		-- =====================================
+
 		if FlashButtons[Key] then
 
 			Button.Activated:Connect(function()
@@ -156,7 +189,10 @@ for Column = 1, 3 do
 
 			end)
 
+		-- =====================================
 		-- BOTONES DE 30 MINUTOS
+		-- =====================================
+
 		elseif LongWhiteButtons[Key] then
 
 			local Active = false
@@ -194,7 +230,10 @@ for Column = 1, 3 do
 
 			end)
 
+		-- =====================================
 		-- BOTÓN 1_2: 1 SEGUNDO
+		-- =====================================
+
 		elseif Key == "1_2" then
 
 			local Active = false
