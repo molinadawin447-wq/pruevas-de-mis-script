@@ -1,7 +1,7 @@
 -- LocalScript
 -- Distribución: 1 / 2 / 4 / 4
--- Los 2 botones de la columna 2:
--- Blanco durante 30 minutos
+-- Botones cuadrados con esquinas redondeadas
+-- Los botones especiales se ponen blancos durante 30 minutos
 -- Tocarlos nuevamente = vuelve a negro
 
 local Players = game:GetService("Players")
@@ -41,7 +41,7 @@ local ColumnData = {
 -- 30 minutos = 1800 segundos
 local WHITE_TIME = 1800
 
--- Botones que tienen la función de 30 minutos
+-- Botones con función de 30 minutos
 local SpecialButtons = {
 	["1_1"] = true,
 
@@ -74,9 +74,9 @@ for Column = 1, 4 do
 		Button.Text = ""
 		Button.AutoButtonColor = true
 
-		-- Botón redondo
+		-- Cuadrado con esquinas redondeadas
 		local Corner = Instance.new("UICorner")
-		Corner.CornerRadius = UDim.new(1, 0)
+		Corner.CornerRadius = UDim.new(0, 10)
 		Corner.Parent = Button
 
 		Button.Parent = Main
