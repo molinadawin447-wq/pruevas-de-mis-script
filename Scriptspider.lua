@@ -1,16 +1,10 @@
 -- LocalScript
--- Distribución: nuevo botón + 2 / 4 / 4
--- 11 botones en total
--- Botón nuevo a la izquierda de la primera fila
+-- Distribución: 1 + 2 + 4 + 4 = 11 botones en total
 --
--- 1_1 = blanco 30 minutos (BAT BYPASS)
--- 1_2 = blanco 1 segundo (RESET)
--- 2_1 = blanco 30 minutos (ANTI DESYNC)
--- 2_2, 2_3, 2_4 = destello blanco (DROP BR, AUTO LEFT, BAT AIMBOT)
--- 3_1 = blanco 30 minutos (TP DOWN)
--- 3_2 = destello blanco (CARRY SPD)
--- 3_3, 3_4 = blanco 30 minutos (LAGGER 1, LAGGER 2)
--- NuevoButton = blanco 30 minutos (toggle) - AUTO RIGHT
+-- Columna 1 (X=0)   : BAT BYPASS
+-- Columna 2 (X=67)  : ANTI DESYNC / RESET
+-- Columna 3 (X=134) : DROP BR / BAT AIMBOT / TP DOWN / LAGGER 1
+-- Columna 4 (X=201) : AUTO LEFT / AUTO RIGHT / CARRY SPD / LAGGER 2
 
 local Players = game:GetService("Players")
 
@@ -36,13 +30,18 @@ local ButtonSize = 60
 local GapX = 7
 local GapY = 6
 
--- Estilo de texto unificado
-local TEXT_FONT = Enum.Font.GothamBold
-local TEXT_SIZE = 13
-local TEXT_STROKE_THICKNESS = 2
+-- =========================================
+-- ESTILO DE TEXTO ÚNICO (mismo grueso para TODOS)
+-- =========================================
+local TEXT_FONT = Enum.Font.GothamBold     -- misma fuente
+local TEXT_SIZE = 13                       -- mismo tamaño/grueso
+local TEXT_STROKE_THICKNESS = 2            -- mismo contorno
+local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
+local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
--- Columnas originales
+-- Columnas
 local ColumnData = {
+	{Amount = 1, X = 0},
 	{Amount = 2, X = 67},
 	{Amount = 4, X = 134},
 	{Amount = 4, X = 201},
@@ -51,36 +50,44 @@ local ColumnData = {
 local WHITE_TIME = 1800
 local SHORT_WHITE_TIME = 1
 
--- Texto que llevará cada botón (dos líneas)
+-- Texto de cada botón (dos líneas)
 local ButtonLabels = {
 	["1_1"] = {"BAT", "BYPASS"},
-	["1_2"] = {"RESET", ""},
+
 	["2_1"] = {"ANTI", "DESYNC"},
-	["2_2"] = {"DROP", "BR"},
-	["2_3"] = {"AUTO", "LEFT"},
-	["2_4"] = {"BAT", "AIMBOT"},
-	["3_1"] = {"TP", "DOWN"},
-	["3_2"] = {"CARRY", "SPD"},
-	["3_3"] = {"LAGGER", "1"},
-	["3_4"] = {"LAGGER", "2"},
+	["2_2"] = {"RESET", ""},
+
+	["3_1"] = {"DROP", "BR"},
+	["3_2"] = {"BAT", "AIMBOT"},
+	["3_3"] = {"TP", "DOWN"},
+	["3_4"] = {"LAGGER", "1"},
+
+	["4_1"] = {"AUTO", "LEFT"},
+	["4_2"] = {"AUTO", "RIGHT"},
+	["4_3"] = {"CARRY", "SPD"},
+	["4_4"] = {"LAGGER", "2"},
 }
 
+-- Botones que permanecen blancos 30 minutos
 local LongWhiteButtons = {
 	["1_1"] = true,
 	["2_1"] = true,
 	["3_1"] = true,
-	["3_3"] = true,
 	["3_4"] = true,
+	["4_4"] = true,
 }
 
+-- Botones que hacen destello blanco (0,15 s)
 local FlashButtons = {
 	["2_2"] = true,
-	["2_3"] = true,
-	["2_4"] = true,
 	["3_2"] = true,
+	["3_3"] = true,
+	["4_1"] = true,
+	["4_2"] = true,
+	["4_3"] = true,
 }
 
--- FUNCIÓN PARA CREAR EL MISMO ESTILO
+-- FUNCIÓN PARA CREAR EL MISMO ESTILO DEL BOTÓN
 local function ApplyButtonStyle(Button)
 
 	Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -100,7 +107,7 @@ local function ApplyButtonStyle(Button)
 	Stroke.Parent = Button
 end
 
--- FUNCIÓN PARA APLICAR TEXTO (dos líneas, blanco, contorno negro)
+-- FUNCIÓN PARA APLICAR TEXTO (siempre con el MISMO grueso)
 local function ApplyTwoLineText(Button, Line1, Line2)
 
 	if Line2 == nil or Line2 == "" then
@@ -109,7 +116,8 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 		Button.Text = Line1 .. "\n" .. Line2
 	end
 
-	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	-- Propiedades fijas tomadas de las constantes de arriba
+	Button.TextColor3 = TEXT_COLOR
 	Button.Font = TEXT_FONT
 	Button.TextSize = TEXT_SIZE
 	Button.TextWrapped = true
@@ -117,8 +125,9 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 	Button.TextYAlignment = Enum.TextYAlignment.Center
 	Button.TextScaled = false
 
+	-- Contorno negro del mismo grosor en todos
 	local TextStroke = Instance.new("UIStroke")
-	TextStroke.Color = Color3.fromRGB(0, 0, 0)
+	TextStroke.Color = TEXT_STROKE_COLOR
 	TextStroke.Thickness = TEXT_STROKE_THICKNESS
 	TextStroke.Transparency = 0
 	TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
@@ -133,51 +142,10 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 end
 
 -- =========================================
--- NUEVO BOTÓN A LA IZQUIERDA (AUTO RIGHT)
+-- CREAR TODOS LOS BOTONES
 -- =========================================
 
-local NewButton = Instance.new("TextButton")
-NewButton.Name = "NewButton"
-NewButton.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
-NewButton.Position = UDim2.fromOffset(0, 0)
-
-ApplyButtonStyle(NewButton)
-ApplyTwoLineText(NewButton, "AUTO", "RIGHT")
-
-NewButton.Parent = Main
-
-local NewActive = false
-local NewActivationId = 0
-
-NewButton.Activated:Connect(function()
-
-	if NewActive then
-		NewActive = false
-		NewActivationId += 1
-		NewButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		return
-	end
-
-	NewActive = true
-	NewActivationId += 1
-	local ThisActivation = NewActivationId
-
-	NewButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-	task.delay(WHITE_TIME, function()
-		if NewActive and NewActivationId == ThisActivation then
-			NewActive = false
-			NewButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		end
-	end)
-
-end)
-
--- =========================================
--- COLUMNAS ORIGINALES
--- =========================================
-
-for Column = 1, 3 do
+for Column = 1, 4 do
 
 	local Data = ColumnData[Column]
 
@@ -194,7 +162,7 @@ for Column = 1, 3 do
 
 		local Key = Column .. "_" .. Number
 
-		-- Aplicar el texto correspondiente según la imagen
+		-- Aplicar el texto que corresponde
 		local Label = ButtonLabels[Key]
 		if Label then
 			ApplyTwoLineText(Button, Label[1], Label[2])
@@ -231,36 +199,6 @@ for Column = 1, 3 do
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
 				task.delay(WHITE_TIME, function()
-					if Active and ActivationId == ThisActivation then
-						Active = false
-						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-					end
-				end)
-
-			end)
-
-		-- BOTÓN 1_2: 1 SEGUNDO
-		elseif Key == "1_2" then
-
-			local Active = false
-			local ActivationId = 0
-
-			Button.Activated:Connect(function()
-
-				if Active then
-					Active = false
-					ActivationId += 1
-					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-					return
-				end
-
-				Active = true
-				ActivationId += 1
-				local ThisActivation = ActivationId
-
-				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-				task.delay(SHORT_WHITE_TIME, function()
 					if Active and ActivationId == ThisActivation then
 						Active = false
 						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
