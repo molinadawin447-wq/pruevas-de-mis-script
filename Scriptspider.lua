@@ -1,15 +1,9 @@
 -- LocalScript
--- Distribución: 2 / 4 / 4
--- 10 botones
--- Botones al extremo derecho
---
--- 1_1 = blanco 30 minutos
--- 1_2 = blanco 1 segundo
--- 2_1 = blanco 30 minutos
--- 2_2, 2_3, 2_4 = destello blanco
--- 3_1 = blanco 30 minutos
--- 3_2 = destello blanco
--- 3_3, 3_4 = blanco 30 minutos
+-- Distribución: 1 / 2 / 4 / 4
+-- 11 botones
+-- Botones cuadrados con esquinas redondeadas
+-- Bordes morados oscuros
+-- Textos blancos, centrados y ajustados
 
 local Players = game:GetService("Players")
 
@@ -24,7 +18,9 @@ ScreenGui.Parent = PlayerGui
 
 local Main = Instance.new("Frame")
 Main.Name = "Main"
-Main.Size = UDim2.fromOffset(201, 245)
+
+-- 4 columnas x 60 + espacios
+Main.Size = UDim2.fromOffset(261, 245)
 
 -- Pegado a la derecha con 7 px de separación
 Main.Position = UDim2.new(1, -7, 0, 12)
@@ -37,23 +33,28 @@ local ButtonSize = 60
 local GapX = 7
 local GapY = 6
 
--- 2 / 4 / 4
+-- 1 / 2 / 4 / 4
 local ColumnData = {
-	{Amount = 2, X = 0},
-	{Amount = 4, X = 67},
+	{Amount = 1, X = 0},
+	{Amount = 2, X = 67},
 	{Amount = 4, X = 134},
+	{Amount = 4, X = 201},
 }
 
--- 30 minutos
-local WHITE_TIME = 1800
+-- Textos de los botones
+local ButtonTexts = {
+	["1_1"] = "BAT\nV2",
 
--- 1 segundo
-local SHORT_WHITE_TIME = 1
+	["2_1"] = "BYPASS\nAIMBOT",
+	["2_2"] = "INSTA\nRESET",
+}
 
--- Botones que permanecen blancos
+-- Botones que permanecen blancos 30 minutos
 local LongWhiteButtons = {
 	["1_1"] = true,
+
 	["2_1"] = true,
+
 	["3_1"] = true,
 	["3_3"] = true,
 	["3_4"] = true,
@@ -62,12 +63,16 @@ local LongWhiteButtons = {
 -- Botones que hacen un destello blanco
 local FlashButtons = {
 	["2_2"] = true,
-	["2_3"] = true,
-	["2_4"] = true,
+
 	["3_2"] = true,
+	["3_3"] = false,
+	["3_4"] = false,
 }
 
-for Column = 1, 3 do
+local WHITE_TIME = 1800
+local FLASH_TIME = 0.15
+
+for Column = 1, 4 do
 
 	local Data = ColumnData[Column]
 
@@ -85,8 +90,18 @@ for Column = 1, 3 do
 
 		Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 		Button.BorderSizePixel = 0
-		Button.Text = ""
+		Button.Text = ButtonTexts[Column .. "_" .. Number] or ""
+		Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Button.TextSize = 13
+		Button.Font = Enum.Font.GothamBold
+		Button.TextWrapped = true
+		Button.TextScaled = false
+		Button.TextXAlignment = Enum.TextXAlignment.Center
+		Button.TextYAlignment = Enum.TextYAlignment.Center
 		Button.AutoButtonColor = true
+
+		-- Margen para que el texto nunca toque los bordes
+		Button.TextBounds = Vector2.new(50, 50)
 
 		-- Esquinas redondeadas
 		local Corner = Instance.new("UICorner")
@@ -105,22 +120,11 @@ for Column = 1, 3 do
 
 		local Key = Column .. "_" .. Number
 
-		-- BOTONES DE DESTELLO
-		if FlashButtons[Key] then
-
-			Button.Activated:Connect(function()
-
-				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-				-- Destello rápido
-				task.wait(0.15)
-
-				Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-
-			end)
-
+		-- =========================
 		-- BOTONES DE 30 MINUTOS
-		elseif LongWhiteButtons[Key] then
+		-- =========================
+
+		if LongWhiteButtons[Key] then
 
 			local Active = false
 			local ActivationId = 0
@@ -152,42 +156,23 @@ for Column = 1, 3 do
 					end
 
 				end)
-
 			end)
 
-		-- BOTÓN 1_2: 1 SEGUNDO
-		elseif Key == "1_2" then
+		-- =========================
+		-- BOTONES DE DESTELLO
+		-- =========================
 
-			local Active = false
-			local ActivationId = 0
+		elseif FlashButtons[Key] then
 
 			Button.Activated:Connect(function()
 
-				if Active then
-					Active = false
-					ActivationId += 1
+				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+				task.delay(FLASH_TIME, function()
 
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 
-					return
-				end
-
-				Active = true
-				ActivationId += 1
-
-				local ThisActivation = ActivationId
-
-				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-				task.delay(SHORT_WHITE_TIME, function()
-
-					if Active and ActivationId == ThisActivation then
-						Active = false
-						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-					end
-
 				end)
-
 			end)
 		end
 	end
