@@ -1,8 +1,7 @@
 -- LocalScript
 -- Distribución: 1 / 2 / 4 / 4
 -- Botones cuadrados con esquinas redondeadas
--- Los botones especiales se ponen blancos durante 30 minutos
--- Tocarlos nuevamente = vuelve a negro
+-- Bordes morados claros brillantes
 
 local Players = game:GetService("Players")
 
@@ -19,7 +18,6 @@ local Main = Instance.new("Frame")
 Main.Name = "Main"
 Main.Size = UDim2.fromOffset(315, 245)
 
--- Arriba a la derecha con un pequeño espacio
 Main.Position = UDim2.new(1, -7, 0, 12)
 Main.AnchorPoint = Vector2.new(1, 0)
 
@@ -38,14 +36,12 @@ local ColumnData = {
 	{Amount = 4, X = 201, Y = 0},
 }
 
--- 30 minutos = 1800 segundos
+-- 30 minutos
 local WHITE_TIME = 1800
 
--- Botones con función de 30 minutos
 local SpecialButtons = {
 	["1_1"] = true,
 
-	-- Los DOS botones de la columna 2
 	["2_1"] = true,
 	["2_2"] = true,
 
@@ -74,10 +70,18 @@ for Column = 1, 4 do
 		Button.Text = ""
 		Button.AutoButtonColor = true
 
-		-- Cuadrado con esquinas redondeadas
+		-- Esquinas redondeadas
 		local Corner = Instance.new("UICorner")
 		Corner.CornerRadius = UDim.new(0, 10)
 		Corner.Parent = Button
+
+		-- Borde morado claro brillante
+		local Stroke = Instance.new("UIStroke")
+		Stroke.Color = Color3.fromRGB(210, 150, 255)
+		Stroke.Thickness = 2
+		Stroke.Transparency = 0
+		Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		Stroke.Parent = Button
 
 		Button.Parent = Main
 
