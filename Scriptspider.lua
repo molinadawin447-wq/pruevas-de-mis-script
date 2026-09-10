@@ -3,14 +3,14 @@
 -- 11 botones en total
 -- Botón nuevo a la izquierda de la primera fila
 --
--- 1_1 = blanco 30 minutos
+-- 1_1 = blanco 30 minutos (texto: BYPASS AIMBOT)
 -- 1_2 = blanco 1 segundo
 -- 2_1 = blanco 30 minutos
 -- 2_2, 2_3, 2_4 = destello blanco
 -- 3_1 = blanco 30 minutos
 -- 3_2 = destello blanco
 -- 3_3, 3_4 = blanco 30 minutos
--- NuevoButton = destello blanco 0,15 segundos
+-- NuevoButton = blanco 30 minutos (toggle) - BAT V2
 
 local Players = game:GetService("Players")
 
@@ -92,8 +92,38 @@ local function ApplyButtonStyle(Button)
 	Stroke.Parent = Button
 end
 
+-- FUNCIÓN PARA APLICAR TEXTO ESTILO "BAT V2"
+-- (dos palabras, una debajo de otra, centrado, blanco con contorno negro)
+local function ApplyTwoLineText(Button, Line1, Line2, TextSizeValue)
+
+	Button.Text = Line1 .. "\n" .. Line2
+	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Button.Font = Enum.Font.GothamBold
+	Button.TextSize = TextSizeValue or 15
+	Button.TextWrapped = true
+	Button.TextXAlignment = Enum.TextXAlignment.Center
+	Button.TextYAlignment = Enum.TextYAlignment.Center
+	Button.TextScaled = false
+
+	-- Contorno negro alrededor de las letras (mismo grosor que BAT V2)
+	local TextStroke = Instance.new("UIStroke")
+	TextStroke.Color = Color3.fromRGB(0, 0, 0)
+	TextStroke.Thickness = 2
+	TextStroke.Transparency = 0
+	TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+	TextStroke.Parent = Button
+
+	-- Evita que el texto se salga del botón
+	local TextPadding = Instance.new("UIPadding")
+	TextPadding.PaddingLeft = UDim.new(0, 4)
+	TextPadding.PaddingRight = UDim.new(0, 4)
+	TextPadding.PaddingTop = UDim.new(0, 4)
+	TextPadding.PaddingBottom = UDim.new(0, 4)
+	TextPadding.Parent = Button
+end
+
 -- =========================================
--- NUEVO BOTÓN A LA IZQUIERDA
+-- NUEVO BOTÓN A LA IZQUIERDA (30 minutos con toggle) - BAT V2
 -- =========================================
 
 local NewButton = Instance.new("TextButton")
@@ -103,43 +133,43 @@ NewButton.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
 NewButton.Position = UDim2.fromOffset(0, 0)
 
 ApplyButtonStyle(NewButton)
-
--- Texto: BAT arriba, V2 abajo, centrado, blanco con contorno negro
-NewButton.Text = "BAT\nV2"
-NewButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-NewButton.Font = Enum.Font.GothamBold
-NewButton.TextSize = 15
-NewButton.TextWrapped = true
-NewButton.TextXAlignment = Enum.TextXAlignment.Center
-NewButton.TextYAlignment = Enum.TextYAlignment.Center
-NewButton.TextScaled = false
-
--- Contorno negro alrededor de las letras
-local TextStroke = Instance.new("UIStroke")
-TextStroke.Color = Color3.fromRGB(0, 0, 0)
-TextStroke.Thickness = 2
-TextStroke.Transparency = 0
-TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-TextStroke.Parent = NewButton
-
--- Evita que el texto se salga del botón
-local TextPadding = Instance.new("UIPadding")
-TextPadding.PaddingLeft = UDim.new(0, 4)
-TextPadding.PaddingRight = UDim.new(0, 4)
-TextPadding.PaddingTop = UDim.new(0, 4)
-TextPadding.PaddingBottom = UDim.new(0, 4)
-TextPadding.Parent = NewButton
+ApplyTwoLineText(NewButton, "BAT", "V2", 15)
 
 NewButton.Parent = Main
 
--- Al tocarlo se pone blanco durante 0,15 segundos
+-- Lógica de 30 minutos con toggle
+local NewActive = false
+local NewActivationId = 0
+
 NewButton.Activated:Connect(function()
+
+	if NewActive then
+
+		NewActive = false
+		NewActivationId += 1
+
+		NewButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+		return
+	end
+
+	NewActive = true
+	NewActivationId += 1
+
+	local ThisActivation = NewActivationId
 
 	NewButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
-	task.wait(0.15)
+	task.delay(WHITE_TIME, function()
 
-	NewButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		if NewActive and NewActivationId == ThisActivation then
+
+			NewActive = false
+			NewButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+		end
+
+	end)
 
 end)
 
@@ -168,6 +198,11 @@ for Column = 1, 3 do
 		Button.Parent = Main
 
 		local Key = Column .. "_" .. Number
+
+		-- TEXTO ESPECIAL PARA EL BOTÓN 1_1 (BYPASS AIMBOT)
+		if Key == "1_1" then
+			ApplyTwoLineText(Button, "BYPASS", "AIMBOT", 12)
+		end
 
 		-- BOTONES DE DESTELLO
 		if FlashButtons[Key] then
