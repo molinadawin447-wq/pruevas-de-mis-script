@@ -650,13 +650,6 @@ local TEXT_STROKE_THICKNESS = 2
 local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
--- ═══════════════════════════════════════════════════════════
--- BORDE BLANCO Y DELGADO
--- ═══════════════════════════════════════════════════════════
-local BORDER_COLOR = Color3.fromRGB(255, 255, 255)
-local BORDER_THICKNESS = 1.5
-local BORDER_TRANSPARENCY = 0
-
 local ColumnData = {
 	{Amount = 1, X = 0},
 	{Amount = 2, X = 67},
@@ -706,14 +699,6 @@ local function ApplyButtonStyle(Button)
 	local Corner = Instance.new("UICorner")
 	Corner.CornerRadius = UDim.new(0, 10)
 	Corner.Parent = Button
-
-	local Stroke = Instance.new("UIStroke")
-	Stroke.Name = "BorderStroke"
-	Stroke.Color = BORDER_COLOR
-	Stroke.Thickness = BORDER_THICKNESS
-	Stroke.Transparency = BORDER_TRANSPARENCY
-	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	Stroke.Parent = Button
 end
 
 local function ApplyTwoLineText(Button, Line1, Line2)
