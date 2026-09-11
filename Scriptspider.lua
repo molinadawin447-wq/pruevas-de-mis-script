@@ -40,22 +40,22 @@ local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
 -- =========================================
--- ESTILO DEL BORDE TIPO "LUZ MORADA" (como la imagen)
--- 3 capas superpuestas: núcleo morado → halo claro → borde casi blanco
+-- ESTILO DEL BORDE TIPO "LUZ AZUL"
+-- 3 capas superpuestas: núcleo azul → halo azul claro → borde casi blanco
 -- =========================================
 
--- Capa 1: núcleo morado intenso (pegado al botón)
-local CORE_COLOR = Color3.fromRGB(160, 80, 230)
+-- Capa 1: núcleo azul intenso (pegado al botón)
+local CORE_COLOR = Color3.fromRGB(40, 110, 230)
 local CORE_THICKNESS = 3
 local CORE_TRANSPARENCY = 0
 
--- Capa 2: halo morado claro
-local MID_COLOR = Color3.fromRGB(190, 130, 255)
+-- Capa 2: halo azul claro
+local MID_COLOR = Color3.fromRGB(90, 160, 255)
 local MID_THICKNESS = 6
 local MID_TRANSPARENCY = 0.25
 
--- Capa 3: borde exterior blanco-lila muy visible (el "brillo" tipo neón)
-local OUTER_COLOR = Color3.fromRGB(230, 215, 255)
+-- Capa 3: borde exterior blanco-azulado muy visible (brillo tipo neón)
+local OUTER_COLOR = Color3.fromRGB(200, 225, 255)
 local OUTER_THICKNESS = 8
 local OUTER_TRANSPARENCY = 0.35
 
@@ -119,7 +119,7 @@ local function ApplyButtonStyle(Button)
 	Corner.CornerRadius = UDim.new(0, 10)
 	Corner.Parent = Button
 
-	-- Capa 1: núcleo morado
+	-- Capa 1: núcleo azul
 	local Core = Instance.new("UIStroke")
 	Core.Name = "CoreStroke"
 	Core.Color = CORE_COLOR
@@ -128,7 +128,7 @@ local function ApplyButtonStyle(Button)
 	Core.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	Core.Parent = Button
 
-	-- Capa 2: halo morado claro
+	-- Capa 2: halo azul claro
 	local Mid = Instance.new("UIStroke")
 	Mid.Name = "MidGlow"
 	Mid.Color = MID_COLOR
