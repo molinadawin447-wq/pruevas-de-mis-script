@@ -40,24 +40,24 @@ local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
 -- =========================================
--- ESTILO DEL BORDE TIPO "LUZ AZUL"
--- 3 capas superpuestas: núcleo azul → halo azul claro → borde casi blanco
+-- ESTILO DEL BORDE TIPO "LUZ ROJA" ❗️
+-- 3 capas superpuestas: núcleo rojo vivo → halo rojo brillante → borde rosado claro
 -- =========================================
 
--- Capa 1: núcleo azul intenso (pegado al botón)
-local CORE_COLOR = Color3.fromRGB(40, 110, 230)
+-- Capa 1: núcleo rojo intenso (pegado al botón)
+local CORE_COLOR = Color3.fromRGB(230, 20, 20)
 local CORE_THICKNESS = 3
 local CORE_TRANSPARENCY = 0
 
--- Capa 2: halo azul claro
-local MID_COLOR = Color3.fromRGB(90, 160, 255)
+-- Capa 2: halo rojo brillante
+local MID_COLOR = Color3.fromRGB(255, 60, 60)
 local MID_THICKNESS = 6
-local MID_TRANSPARENCY = 0.25
+local MID_TRANSPARENCY = 0.2
 
--- Capa 3: borde exterior blanco-azulado muy visible (brillo tipo neón)
-local OUTER_COLOR = Color3.fromRGB(200, 225, 255)
+-- Capa 3: borde exterior rosado claro (brillo tipo neón)
+local OUTER_COLOR = Color3.fromRGB(255, 180, 180)
 local OUTER_THICKNESS = 8
-local OUTER_TRANSPARENCY = 0.35
+local OUTER_TRANSPARENCY = 0.3
 
 -- Columnas
 local ColumnData = {
@@ -119,7 +119,7 @@ local function ApplyButtonStyle(Button)
 	Corner.CornerRadius = UDim.new(0, 10)
 	Corner.Parent = Button
 
-	-- Capa 1: núcleo azul
+	-- Capa 1: núcleo rojo vivo
 	local Core = Instance.new("UIStroke")
 	Core.Name = "CoreStroke"
 	Core.Color = CORE_COLOR
@@ -128,7 +128,7 @@ local function ApplyButtonStyle(Button)
 	Core.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	Core.Parent = Button
 
-	-- Capa 2: halo azul claro
+	-- Capa 2: halo rojo brillante
 	local Mid = Instance.new("UIStroke")
 	Mid.Name = "MidGlow"
 	Mid.Color = MID_COLOR
@@ -137,7 +137,7 @@ local function ApplyButtonStyle(Button)
 	Mid.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	Mid.Parent = Button
 
-	-- Capa 3: borde exterior claro (brillo neón)
+	-- Capa 3: borde exterior rosado claro (brillo neón)
 	local Outer = Instance.new("UIStroke")
 	Outer.Name = "OuterGlow"
 	Outer.Color = OUTER_COLOR
