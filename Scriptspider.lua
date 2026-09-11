@@ -40,24 +40,11 @@ local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
 -- =========================================
--- ESTILO DEL BORDE TIPO "LUZ ROJA" ❗️
--- 3 capas superpuestas: núcleo rojo vivo → halo rojo brillante → borde rosado claro
+-- BORDE NORMAL ROJO OSCURO (un poquito ancho)
 -- =========================================
-
--- Capa 1: núcleo rojo intenso (pegado al botón)
-local CORE_COLOR = Color3.fromRGB(230, 20, 20)
-local CORE_THICKNESS = 3
-local CORE_TRANSPARENCY = 0
-
--- Capa 2: halo rojo brillante
-local MID_COLOR = Color3.fromRGB(255, 60, 60)
-local MID_THICKNESS = 6
-local MID_TRANSPARENCY = 0.2
-
--- Capa 3: borde exterior rosado claro (brillo tipo neón)
-local OUTER_COLOR = Color3.fromRGB(255, 180, 180)
-local OUTER_THICKNESS = 8
-local OUTER_TRANSPARENCY = 0.3
+local BORDER_COLOR = Color3.fromRGB(150, 20, 20)   -- rojo oscuro
+local BORDER_THICKNESS = 3                         -- un poquito ancho
+local BORDER_TRANSPARENCY = 0
 
 -- Columnas
 local ColumnData = {
@@ -107,7 +94,7 @@ local Flash010Buttons = {
 	["3_3"] = true,
 }
 
--- FUNCIÓN PARA CREAR EL MISMO ESTILO DEL BOTÓN
+-- FUNCIÓN PARA CREAR EL ESTILO DEL BOTÓN
 local function ApplyButtonStyle(Button)
 
 	Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -119,32 +106,14 @@ local function ApplyButtonStyle(Button)
 	Corner.CornerRadius = UDim.new(0, 10)
 	Corner.Parent = Button
 
-	-- Capa 1: núcleo rojo vivo
-	local Core = Instance.new("UIStroke")
-	Core.Name = "CoreStroke"
-	Core.Color = CORE_COLOR
-	Core.Thickness = CORE_THICKNESS
-	Core.Transparency = CORE_TRANSPARENCY
-	Core.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	Core.Parent = Button
-
-	-- Capa 2: halo rojo brillante
-	local Mid = Instance.new("UIStroke")
-	Mid.Name = "MidGlow"
-	Mid.Color = MID_COLOR
-	Mid.Thickness = MID_THICKNESS
-	Mid.Transparency = MID_TRANSPARENCY
-	Mid.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	Mid.Parent = Button
-
-	-- Capa 3: borde exterior rosado claro (brillo neón)
-	local Outer = Instance.new("UIStroke")
-	Outer.Name = "OuterGlow"
-	Outer.Color = OUTER_COLOR
-	Outer.Thickness = OUTER_THICKNESS
-	Outer.Transparency = OUTER_TRANSPARENCY
-	Outer.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	Outer.Parent = Button
+	-- Borde normal rojo oscuro
+	local Stroke = Instance.new("UIStroke")
+	Stroke.Name = "BorderStroke"
+	Stroke.Color = BORDER_COLOR
+	Stroke.Thickness = BORDER_THICKNESS
+	Stroke.Transparency = BORDER_TRANSPARENCY
+	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Stroke.Parent = Button
 end
 
 -- FUNCIÓN PARA APLICAR TEXTO
