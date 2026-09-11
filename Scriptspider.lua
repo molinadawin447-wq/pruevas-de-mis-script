@@ -650,8 +650,11 @@ local TEXT_STROKE_THICKNESS = 2
 local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
-local BORDER_COLOR = Color3.fromRGB(30, 80, 170)
-local BORDER_THICKNESS = 3
+-- ═══════════════════════════════════════════════════════════
+-- BORDE BLANCO Y DELGADO
+-- ═══════════════════════════════════════════════════════════
+local BORDER_COLOR = Color3.fromRGB(255, 255, 255)
+local BORDER_THICKNESS = 1.5
 local BORDER_TRANSPARENCY = 0
 
 local ColumnData = {
