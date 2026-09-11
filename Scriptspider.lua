@@ -39,7 +39,27 @@ local TEXT_STROKE_THICKNESS = 2
 local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
--- Columnas (columna 3 ahora tiene 3 botones)
+-- =========================================
+-- ESTILO DEL BORDE TIPO "LUZ"
+-- 3 capas: núcleo morado → morado claro → blanco por fuera
+-- =========================================
+
+-- Capa 1: núcleo morado (la más pegada al botón)
+local CORE_COLOR = Color3.fromRGB(150, 70, 220)     -- morado
+local CORE_THICKNESS = 3
+local CORE_TRANSPARENCY = 0
+
+-- Capa 2: morado claro (transición)
+local MID_COLOR = Color3.fromRGB(180, 120, 255)     -- morado clarito
+local MID_THICKNESS = 5
+local MID_TRANSPARENCY = 0.35
+
+-- Capa 3: blanco por fuera (el "brillo" de la luz)
+local OUTER_COLOR = Color3.fromRGB(235, 225, 255)   -- casi blanco, con un toque lila
+local OUTER_THICKNESS = 7
+local OUTER_TRANSPARENCY = 0.55
+
+-- Columnas
 local ColumnData = {
 	{Amount = 1, X = 0},
 	{Amount = 2, X = 67},
@@ -48,9 +68,9 @@ local ColumnData = {
 }
 
 -- Tiempos
-local WHITE_TIME = 1800          -- 30 minutos
-local SHORT_WHITE_TIME = 1       -- 1 segundo
-local FLASH_010_TIME = 0.10      -- 0,10 segundos
+local WHITE_TIME = 1800
+local SHORT_WHITE_TIME = 1
+local FLASH_010_TIME = 0.10
 
 -- Texto de cada botón
 local ButtonLabels = {
@@ -66,29 +86,25 @@ local ButtonLabels = {
 	["4_1"] = {"AUTO", "LEFT"},
 	["4_2"] = {"AUTO", "RIGHT"},
 	["4_3"] = {"CARRY", "SPD"},
-	["4_4"] = {"LAGGER", "OFF"},   -- cambia a ON cuando se activa
+	["4_4"] = {"LAGGER", "OFF"},
 }
-
--- =========================================
--- COMPORTAMIENTOS
--- =========================================
 
 -- Toggle 30 minutos
 local LongWhiteButtons = {
-	["1_1"] = true,   -- BAT BYPASS
-	["2_1"] = true,   -- ANTI DESYNC
-	["3_2"] = true,   -- BAT AIMBOT
-	["4_1"] = true,   -- AUTO LEFT
-	["4_2"] = true,   -- AUTO RIGHT
-	["4_3"] = true,   -- CARRY SPD
-	["4_4"] = true,   -- LAGGER OFF/ON
+	["1_1"] = true,
+	["2_1"] = true,
+	["3_2"] = true,
+	["4_1"] = true,
+	["4_2"] = true,
+	["4_3"] = true,
+	["4_4"] = true,
 }
 
--- Destello blanco de 0,10 segundos
+-- Destello 0,10 s
 local Flash010Buttons = {
-	["2_2"] = true,   -- RESET
-	["3_1"] = true,   -- DROP BR
-	["3_3"] = true,   -- TP DOWN
+	["2_2"] = true,
+	["3_1"] = true,
+	["3_3"] = true,
 }
 
 -- FUNCIÓN PARA CREAR EL MISMO ESTILO DEL BOTÓN
@@ -103,15 +119,35 @@ local function ApplyButtonStyle(Button)
 	Corner.CornerRadius = UDim.new(0, 10)
 	Corner.Parent = Button
 
-	local Stroke = Instance.new("UIStroke")
-	Stroke.Color = Color3.fromRGB(120, 50, 180)
-	Stroke.Thickness = 2
-	Stroke.Transparency = 0
-	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	Stroke.Parent = Button
+	-- Capa 1: núcleo morado
+	local Core = Instance.new("UIStroke")
+	Core.Name = "CoreStroke"
+	Core.Color = CORE_COLOR
+	Core.Thickness = CORE_THICKNESS
+	Core.Transparency = CORE_TRANSPARENCY
+	Core.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Core.Parent = Button
+
+	-- Capa 2: morado claro
+	local Mid = Instance.new("UIStroke")
+	Mid.Name = "MidGlow"
+	Mid.Color = MID_COLOR
+	Mid.Thickness = MID_THICKNESS
+	Mid.Transparency = MID_TRANSPARENCY
+	Mid.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Mid.Parent = Button
+
+	-- Capa 3: blanco exterior (brillo de la luz)
+	local Outer = Instance.new("UIStroke")
+	Outer.Name = "OuterGlow"
+	Outer.Color = OUTER_COLOR
+	Outer.Thickness = OUTER_THICKNESS
+	Outer.Transparency = OUTER_TRANSPARENCY
+	Outer.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Outer.Parent = Button
 end
 
--- FUNCIÓN PARA APLICAR TEXTO (mismo grueso siempre)
+-- FUNCIÓN PARA APLICAR TEXTO
 local function ApplyTwoLineText(Button, Line1, Line2)
 
 	if Line2 == nil or Line2 == "" then
@@ -127,11 +163,6 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 	Button.TextXAlignment = Enum.TextXAlignment.Center
 	Button.TextYAlignment = Enum.TextYAlignment.Center
 	Button.TextScaled = false
-
-	-- Solo crear el contorno si no existe ya
-	if not Button:FindFirstChildOfClass("UIStroke") or not Button:FindFirstChild("TextStroke") then
-		-- (el UIStroke del borde ya existe; este es para las letras)
-	end
 
 	local TextStroke = Instance.new("UIStroke")
 	TextStroke.Name = "TextStroke"
@@ -170,13 +201,12 @@ for Column = 1, 4 do
 
 		local Key = Column .. "_" .. Number
 
-		-- Texto del botón
 		local Label = ButtonLabels[Key]
 		if Label then
 			ApplyTwoLineText(Button, Label[1], Label[2])
 		end
 
-		-- DESTELLO BLANCO 0,10 s (RESET, DROP BR, TP DOWN)
+		-- DESTELLO BLANCO 0,10 s
 		if Flash010Buttons[Key] then
 
 			Button.Activated:Connect(function()
@@ -194,12 +224,10 @@ for Column = 1, 4 do
 			Button.Activated:Connect(function()
 
 				if Active then
-					-- Segundo toque antes de los 30 min → vuelve a negro
 					Active = false
 					ActivationId += 1
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 
-					-- Si es el botón LAGGER, volver a "OFF"
 					if Key == "4_4" then
 						Button.Text = "LAGGER\nOFF"
 					end
@@ -207,14 +235,12 @@ for Column = 1, 4 do
 					return
 				end
 
-				-- Primer toque → blanco 30 min
 				Active = true
 				ActivationId += 1
 				local ThisActivation = ActivationId
 
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
-				-- Si es el botón LAGGER, cambiar a "ON"
 				if Key == "4_4" then
 					Button.Text = "LAGGER\nON"
 				end
@@ -224,7 +250,6 @@ for Column = 1, 4 do
 						Active = false
 						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 
-						-- Si es el botón LAGGER, volver a "OFF"
 						if Key == "4_4" then
 							Button.Text = "LAGGER\nOFF"
 						end
