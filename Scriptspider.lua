@@ -831,3 +831,44 @@ for Column = 1, 4 do
 		end
 	end
 end
+
+-- ============================================================
+-- BOTÓN ENANO IZQUIERDO (independiente)
+-- ============================================================
+
+local BotonEnano = Instance.new("TextButton")
+BotonEnano.Name = "BotonEnano"
+BotonEnano.Size = UDim2.fromOffset(45, 22)
+BotonEnano.Position = UDim2.new(0, 8, 0.5, -60)
+BotonEnano.AnchorPoint = Vector2.new(0, 0.5)
+BotonEnano.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BotonEnano.BorderSizePixel = 0
+BotonEnano.Text = ""
+BotonEnano.AutoButtonColor = true
+BotonEnano.Parent = ScreenGui
+
+local CornerEnano = Instance.new("UICorner")
+CornerEnano.CornerRadius = UDim.new(1, 0)
+CornerEnano.Parent = BotonEnano
+
+BotonEnano.Text = "MENU"
+BotonEnano.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotonEnano.Font = Enum.Font.GothamBold
+BotonEnano.TextSize = 11
+BotonEnano.TextWrapped = true
+BotonEnano.TextXAlignment = Enum.TextXAlignment.Center
+BotonEnano.TextYAlignment = Enum.TextYAlignment.Center
+
+local TextStrokeEnano = Instance.new("UIStroke")
+TextStrokeEnano.Color = Color3.fromRGB(0, 0, 0)
+TextStrokeEnano.Thickness = 1
+TextStrokeEnano.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+TextStrokeEnano.Parent = BotonEnano
+
+BotonEnano.Activated:Connect(function()
+	if Main.Visible then
+		Main.Visible = false
+	else
+		Main.Visible = true
+	end
+end)
