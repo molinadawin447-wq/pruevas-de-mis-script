@@ -14,6 +14,15 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 local LP = Player
 
 -- ============================================================
+-- MÓDULO M (contenedor de funciones del BAT AIMBOT)
+-- ============================================================
+local M = {}
+M.mobBtnRefs = {}
+M.autoBatEnabled = false
+M.autoSwingEnabled = true
+M.aimbotSpeed = 58
+
+-- ============================================================
 -- INSTANT RESET (AXONIC HUB v2.0)
 -- ============================================================
 
@@ -114,6 +123,173 @@ local function performInstantReset()
 			resetCooldown = false
 		end)
 	end
+end
+
+-- ============================================================
+-- BAT AIMBOT (funciones del módulo M)
+-- ============================================================
+
+function M.findBatForAimbot()
+	local char = player.Character
+	if not char then return nil end
+	for _, tool in ipairs(char:GetChildren()) do
+		if tool:IsA("Tool") and (tool.Name:lower():find("bat") or tool.Name:lower():find("slap")) then
+			return tool
+		end
+	end
+	local bp = player:FindFirstChild("Backpack")
+	if bp then
+		for _, tool in ipairs(bp:GetChildren()) do
+			if tool:IsA("Tool") and (tool.Name:lower():find("bat") or tool.Name:lower():find("slap")) then
+				return tool
+			end
+		end
+	end
+	return nil
+end
+
+function M.getClosestTargetAimbot()
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not root then return nil end
+	local closest, minDist = nil, math.huge
+	for _, plr in ipairs(Players:GetPlayers()) do
+		if plr ~= player and plr.Character then
+			local tRoot = plr.Character:FindFirstChild("HumanoidRootPart")
+			local hum = plr.Character:FindFirstChildOfClass("Humanoid")
+			if tRoot and hum and hum.Health > 0 then
+				local dist = (tRoot.Position - root.Position).Magnitude
+				if dist < minDist then
+					minDist = dist
+					closest = tRoot
+				end
+			end
+		end
+	end
+	return closest
+end
+
+function M.swingCurrentBatAimbot(char)
+	if not M.autoSwingEnabled then return end
+	local bat = M.findBatForAimbot()
+	if bat and bat.Parent == char then
+		pcall(function() bat:Activate() end)
+	end
+end
+
+function M.startBatAimbot()
+	if M.aimbotConn then M.aimbotConn:Disconnect() end
+
+	if M.autoLeftEnabled then
+		M.autoLeftEnabled = false
+		if M.autoLeftSetVisual then M.autoLeftSetVisual(false) end
+		M.stopAutoLeft()
+	end
+	if M.autoRightEnabled then
+		M.autoRightEnabled = false
+		if M.autoRightSetVisual then M.autoRightSetVisual(false) end
+		M.stopAutoRight()
+	end
+
+	M.autoBatEnabled = true
+	if M.autoTPEnabled then
+		if M.autoTPConn then task.cancel(M.autoTPConn); M.autoTPConn = nil end
+		if M.setAutoTPVisual then M.setAutoTPVisual(true) end
+	end
+
+	local hum0 = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if hum0 then hum0.AutoRotate = false end
+
+	M.aimbotConn = RunService.RenderStepped:Connect(function()
+		if not M.autoBatEnabled then return end
+
+		local char = player.Character
+		if not char then return end
+		local root = char:FindFirstChild("HumanoidRootPart")
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		if not root or not hum then return end
+
+		if not char:FindFirstChildOfClass("Tool") then
+			local bat = M.findBatForAimbot()
+			if bat then pcall(function() hum:EquipTool(bat) end) end
+		end
+
+		local target = M.getClosestTargetAimbot()
+		if not target then
+			M._aimbotTarget = nil
+			M.swingCurrentBatAimbot(char)
+			return
+		end
+		M._aimbotTarget = target
+
+		local targetVel = target.AssemblyLinearVelocity
+		local myPos = root.Position
+		local targetPos = target.Position
+
+		local predictPos = targetPos + targetVel * 0.14 + target.CFrame.LookVector * 0.3
+		local direction = predictPos - myPos
+		local flatDir = Vector3.new(direction.X, 0, direction.Z).Unit
+
+		local chaseSpeed = M.aimbotSpeed or 58
+		local desiredHeight = targetPos.Y + 3.7
+		local yVel = (desiredHeight - myPos.Y) * 19.5 + targetVel.Y * 0.8
+
+		if hum.FloorMaterial ~= Enum.Material.Air then
+			yVel = math.max(yVel, 13)
+		end
+		yVel = math.clamp(yVel, -70, 110)
+
+		local desiredVel = Vector3.new(flatDir.X * chaseSpeed, yVel, flatDir.Z * chaseSpeed)
+		root.AssemblyLinearVelocity = root.AssemblyLinearVelocity:Lerp(desiredVel, 0.8)
+
+		local speed3 = targetVel.Magnitude
+		local predictTime = math.clamp(speed3 / 150, 0.05, 0.2)
+		local predictedPos = targetPos + targetVel * predictTime
+
+		local toPredict = predictedPos - myPos
+		if toPredict.Magnitude > 0.1 then
+			local goalCF = CFrame.lookAt(myPos, predictedPos)
+			local diffCF = root.CFrame:Inverse() * goalCF
+			local rx, ry, rz = diffCF:ToEulerAnglesXYZ()
+			rx = math.clamp(rx, -2.5, 2.5)
+			ry = math.clamp(ry, -2.5, 2.5)
+			rz = math.clamp(rz, -2.5, 2.5)
+			root.AssemblyAngularVelocity = root.CFrame:VectorToWorldSpace(Vector3.new(rx*42, ry*42, rz*42))
+		end
+
+		M.swingCurrentBatAimbot(char)
+	end)
+
+	if M.autoBatSetVisual then M.autoBatSetVisual(true) end
+	if M.mobBtnRefs.autoBat then M.mobBtnRefs.autoBat(true) end
+end
+
+function M.stopBatAimbot()
+	if M.aimbotConn then
+		M.aimbotConn:Disconnect()
+		M.aimbotConn = nil
+	end
+	M._aimbotTarget = nil
+	M.autoBatEnabled = false
+
+	local char = player.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	if root then
+		root.AssemblyLinearVelocity = Vector3.zero
+		root.AssemblyAngularVelocity = Vector3.zero
+	end
+	local hum2 = char and char:FindFirstChildOfClass("Humanoid")
+	if hum2 then hum2.AutoRotate = true end
+
+	if M.autoTPEnabled then M.startAutoTP() end
+	if M.autoBatSetVisual then M.autoBatSetVisual(false) end
+	if M.mobBtnRefs.autoBat then M.mobBtnRefs.autoBat(false) end
+end
+
+function M.queueAutoBatStart()
+	if M.antiKickEnabled and M.brainrotDetected then return end
+	if M.autoLeftEnabled then M.autoLeftEnabled=false; if M.autoLeftSetVisual then M.autoLeftSetVisual(false) end; M.stopAutoLeft() end
+	if M.autoRightEnabled then M.autoRightEnabled=false; if M.autoRightSetVisual then M.autoRightSetVisual(false) end; M.stopAutoRight() end
+	M.startBatAimbot()
 end
 
 -- ============================================================
@@ -474,10 +650,7 @@ local TEXT_STROKE_THICKNESS = 2
 local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
--- =========================================
--- BORDE NORMAL AZUL UN POQUITO OSCURO
--- =========================================
-local BORDER_COLOR = Color3.fromRGB(30, 80, 170)   -- azul un poquito oscuro
+local BORDER_COLOR = Color3.fromRGB(30, 80, 170)
 local BORDER_THICKNESS = 3
 local BORDER_TRANSPARENCY = 0
 
@@ -619,6 +792,8 @@ for Column = 1, 4 do
 						stopAutoRight()
 					elseif Key == "2_1" then
 						disableTPBat()
+					elseif Key == "3_2" then
+						M.stopBatAimbot()
 					end
 
 					return
@@ -640,6 +815,8 @@ for Column = 1, 4 do
 					startAutoRight()
 				elseif Key == "2_1" then
 					enableTPBat()
+				elseif Key == "3_2" then
+					M.queueAutoBatStart()
 				end
 
 				task.delay(WHITE_TIME, function()
@@ -657,6 +834,8 @@ for Column = 1, 4 do
 							stopAutoRight()
 						elseif Key == "2_1" then
 							disableTPBat()
+						elseif Key == "3_2" then
+							M.stopBatAimbot()
 						end
 					end
 				end)
