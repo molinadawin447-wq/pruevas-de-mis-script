@@ -474,7 +474,10 @@ local TEXT_STROKE_THICKNESS = 2
 local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
 
-local BORDER_COLOR = Color3.fromRGB(150, 20, 20)
+-- =========================================
+-- BORDE NORMAL AZUL UN POQUITO OSCURO
+-- =========================================
+local BORDER_COLOR = Color3.fromRGB(30, 80, 170)   -- azul un poquito oscuro
 local BORDER_THICKNESS = 3
 local BORDER_TRANSPARENCY = 0
 
@@ -502,10 +505,9 @@ local ButtonLabels = {
 	["4_4"] = {"LAGGER", "OFF"},
 }
 
--- Toggle 30 minutos
 local LongWhiteButtons = {
 	["1_1"] = true,
-	["2_1"] = true,   -- ANTI DESYNC
+	["2_1"] = true,
 	["3_2"] = true,
 	["4_1"] = true,
 	["4_2"] = true,
@@ -513,7 +515,6 @@ local LongWhiteButtons = {
 	["4_4"] = true,
 }
 
--- Destello 0,10 s
 local Flash010Buttons = {
 	["2_2"] = true,
 	["3_1"] = true,
@@ -617,7 +618,7 @@ for Column = 1, 4 do
 					elseif Key == "4_2" then
 						stopAutoRight()
 					elseif Key == "2_1" then
-						disableTPBat()      -- 🔹 ANTI DESYNC → apaga TP Bat
+						disableTPBat()
 					end
 
 					return
@@ -638,7 +639,7 @@ for Column = 1, 4 do
 				elseif Key == "4_2" then
 					startAutoRight()
 				elseif Key == "2_1" then
-					enableTPBat()       -- 🔹 ANTI DESYNC → activa TP Bat
+					enableTPBat()
 				end
 
 				task.delay(WHITE_TIME, function()
@@ -655,7 +656,7 @@ for Column = 1, 4 do
 						elseif Key == "4_2" then
 							stopAutoRight()
 						elseif Key == "2_1" then
-							disableTPBat()   -- 🔹 Apaga TP Bat a los 30 min
+							disableTPBat()
 						end
 					end
 				end)
