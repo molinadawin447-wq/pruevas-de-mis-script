@@ -705,7 +705,7 @@ for Column = 1, 4 do
 end
 
 -- ============================================================
--- BOTÓN DECORATIVO (estilo VANTA VS) - SIN TEXTO Y SIN FUNCIÓN
+-- BOTÓN DECORATIVO (estilo VANTA VS) - ABRE EL PANEL ADAPT
 -- ============================================================
 
 local BotonDecorativo = Instance.new("TextButton")
@@ -714,18 +714,104 @@ BotonDecorativo.Size = UDim2.fromOffset(120, 45)
 BotonDecorativo.Position = UDim2.new(0, 12, 0.5, -60)
 BotonDecorativo.AnchorPoint = Vector2.new(0, 0.5)
 BotonDecorativo.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-BotonDecorativo.BackgroundTransparency = 0.15
+BotonDecorativo.BackgroundTransparency = 0
 BotonDecorativo.BorderSizePixel = 0
 BotonDecorativo.Text = ""
-BotonDecorativo.AutoButtonColor = false
+BotonDecorativo.AutoButtonColor = true
 BotonDecorativo.Parent = ScreenGui
 
 local CornerBotonDecorativo = Instance.new("UICorner")
-CornerBotonDecorativo.CornerRadius = UDim.new(0, 8)
+CornerBotonDecorativo.CornerRadius = UDim.new(0, 10)
 CornerBotonDecorativo.Parent = BotonDecorativo
 
-local StrokeBotonDecorativo = Instance.new("UIStroke")
-StrokeBotonDecorativo.Color = Color3.fromRGB(255, 255, 255)
-StrokeBotonDecorativo.Thickness = 1.5
-StrokeBotonDecorativo.Transparency = 0.3
-StrokeBotonDecorativo.Parent = BotonDecorativo
+-- ============================================================
+-- PANEL ADAPT (vacío) - Escondido a la derecha, aparece centrado
+-- ============================================================
+
+local PanelAdapt = Instance.new("Frame")
+PanelAdapt.Name = "PanelAdapt"
+PanelAdapt.Size = UDim2.fromOffset(320, 420)
+PanelAdapt.AnchorPoint = Vector2.new(0.5, 0.5)
+PanelAdapt.Position = UDim2.new(1.5, 0, 0.5, 0)  -- fuera de pantalla (derecha)
+PanelAdapt.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+PanelAdapt.BorderSizePixel = 0
+PanelAdapt.Visible = true
+PanelAdapt.Parent = ScreenGui
+
+local CornerPanelAdapt = Instance.new("UICorner")
+CornerPanelAdapt.CornerRadius = UDim.new(0, 14)
+CornerPanelAdapt.Parent = PanelAdapt
+
+local StrokePanelAdapt = Instance.new("UIStroke")
+StrokePanelAdapt.Color = Color3.fromRGB(60, 60, 60)
+StrokePanelAdapt.Thickness = 1.5
+StrokePanelAdapt.Parent = PanelAdapt
+
+-- Botón "X" para cerrar el panel
+local BotonCerrarX = Instance.new("TextButton")
+BotonCerrarX.Name = "BotonCerrarX"
+BotonCerrarX.Size = UDim2.fromOffset(32, 32)
+BotonCerrarX.Position = UDim2.new(1, -10, 0, 10)
+BotonCerrarX.AnchorPoint = Vector2.new(1, 0)
+BotonCerrarX.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BotonCerrarX.BorderSizePixel = 0
+BotonCerrarX.Text = "X"
+BotonCerrarX.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotonCerrarX.Font = Enum.Font.GothamBold
+BotonCerrarX.TextSize = 18
+BotonCerrarX.AutoButtonColor = true
+BotonCerrarX.Parent = PanelAdapt
+
+local CornerBotonX = Instance.new("UICorner")
+CornerBotonX.CornerRadius = UDim.new(0, 8)
+CornerBotonX.Parent = BotonCerrarX
+
+-- Posiciones del panel
+local POS_OCULTO = UDim2.new(1.5, 0, 0.5, 0)   -- escondido a la derecha
+local POS_CENTRO = UDim2.new(0.5, 0, 0.5, 0)   -- centrado en pantalla
+
+local panelVisible = false
+local animando = false
+
+-- Función para abrir el panel
+local function abrirPanel()
+	if animando or panelVisible then return end
+	animando = true
+	PanelAdapt.Position = POS_OCULTO
+	local tweenIn = TweenService:Create(
+		PanelAdapt,
+		TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{Position = POS_CENTRO}
+	)
+	tweenIn:Play()
+	tweenIn.Completed:Connect(function()
+		panelVisible = true
+		animando = false
+	end)
+end
+
+-- Función para cerrar el panel (se devuelve por donde vino)
+local function cerrarPanel()
+	if animando or not panelVisible then return end
+	animando = true
+	local tweenOut = TweenService:Create(
+		PanelAdapt,
+		TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+		{Position = POS_OCULTO}
+	)
+	tweenOut:Play()
+	tweenOut.Completed:Connect(function()
+		panelVisible = false
+		animando = false
+	end)
+end
+
+-- El botón decorativo abre el panel
+BotonDecorativo.Activated:Connect(function()
+	abrirPanel()
+end)
+
+-- La X cierra el panel y lo devuelve por donde vino
+BotonCerrarX.Activated:Connect(function()
+	cerrarPanel()
+end)
