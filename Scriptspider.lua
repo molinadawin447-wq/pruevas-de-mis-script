@@ -540,7 +540,7 @@ function disableTPBat()
 end
 
 -- ============================================================
--- UI PRINCIPAL
+-- UI PRINCIPAL (PANEL DERECHO - TAMAÑO AJUSTADO)
 -- ============================================================
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -549,30 +549,27 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 ScreenGui.Parent = PlayerGui
 
+-- CAMBIO: Panel derecho grande ocupando 35% ancho y 85% alto
 local Main = Instance.new("Frame")
 Main.Name = "Main"
-Main.Size = UDim2.fromOffset(268, 245)
-Main.Position = UDim2.new(1, -7, 0, 12)
-Main.AnchorPoint = Vector2.new(1, 0)
+Main.Size = UDim2.new(0.35, 0, 0.85, 0) 
+Main.Position = UDim2.new(0.63, 0, 0.1, 0) 
+Main.AnchorPoint = Vector2.new(0, 0)
 Main.BackgroundTransparency = 1
 Main.Parent = ScreenGui
 
-local ButtonSize = 60
-local GapX = 7
-local GapY = 6
+-- CAMBIO: Se agrega UIGridLayout para que los botones se hagan grandes y se acomoden solos
+local Grid = Instance.new("UIGridLayout")
+Grid.CellSize = UDim2.new(0.22, 0, 0.18, 0) -- Tamaño de cada botón (22% ancho, 18% alto del panel)
+Grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0) -- Separación entre botones
+Grid.SortOrder = Enum.SortOrder.LayoutOrder
+Grid.Parent = Main
 
 local TEXT_FONT = Enum.Font.GothamBold
 local TEXT_SIZE = 13
 local TEXT_STROKE_THICKNESS = 2
 local TEXT_COLOR = Color3.fromRGB(255, 255, 255)
 local TEXT_STROKE_COLOR = Color3.fromRGB(0, 0, 0)
-
-local ColumnData = {
-	{Amount = 1, X = 0},
-	{Amount = 2, X = 67},
-	{Amount = 3, X = 134},
-	{Amount = 4, X = 201},
-}
 
 local WHITE_TIME = 1800
 local FLASH_010_TIME = 0.10
@@ -641,85 +638,82 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 	TextPadding.Parent = Button
 end
 
-for Column = 1, 4 do
-	local Data = ColumnData[Column]
-	for Number = 1, Data.Amount do
-		local Button = Instance.new("TextButton")
-		Button.Name = "Button" .. Column .. "_" .. Number
-		Button.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
-		Button.Position = UDim2.fromOffset(Data.X, (Number - 1) * (ButtonSize + GapY))
-		ApplyButtonStyle(Button)
-		Button.Parent = Main
+-- CAMBIO: Se eliminó el cálculo manual de posición (ColumnData) y ahora se usa el UIGridLayout
+local ButtonKeys = {
+	"1_1",
+	"2_1", "2_2",
+	"3_1", "3_2", "3_3",
+	"4_1", "4_2", "4_3", "4_4"
+}
 
-		local Key = Column .. "_" .. Number
-		local Label = ButtonLabels[Key]
-		if Label then
-			ApplyTwoLineText(Button, Label[1], Label[2])
-		end
+for index, Key in ipairs(ButtonKeys) do
+	local Button = Instance.new("TextButton")
+	Button.Name = "Button_" .. Key
+	Button.LayoutOrder = index -- Orden para el UIGridLayout
+	ApplyButtonStyle(Button)
+	Button.Parent = Main
 
-		if Flash010Buttons[Key] then
-			Button.Activated:Connect(function()
-				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				if Key == "2_2" then performInstantReset() end
-				task.wait(FLASH_010_TIME)
+	local Label = ButtonLabels[Key]
+	if Label then
+		ApplyTwoLineText(Button, Label[1], Label[2])
+	end
+
+	if Flash010Buttons[Key] then
+		Button.Activated:Connect(function()
+			Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			if Key == "2_2" then performInstantReset() end
+			task.wait(FLASH_010_TIME)
+			Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		end)
+	elseif LongWhiteButtons[Key] then
+		local Active = false
+		local ActivationId = 0
+		Button.Activated:Connect(function()
+			if Active then
+				Active = false
+				ActivationId += 1
 				Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-			end)
-		elseif LongWhiteButtons[Key] then
-			local Active = false
-			local ActivationId = 0
-			Button.Activated:Connect(function()
-				if Active then
+				if Key == "4_4" then Button.Text = "LAGGER\nOFF" end
+				if Key == "4_1" then stopAutoLeft()
+				elseif Key == "4_2" then stopAutoRight()
+				elseif Key == "2_1" then disableTPBat()
+				elseif Key == "3_2" then M.stopBatAimbot() end
+				return
+			end
+			Active = true
+			ActivationId += 1
+			local ThisActivation = ActivationId
+			Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			if Key == "4_4" then Button.Text = "LAGGER\nON" end
+			if Key == "4_1" then startAutoLeft()
+			elseif Key == "4_2" then startAutoRight()
+			elseif Key == "2_1" then enableTPBat()
+			elseif Key == "3_2" then M.queueAutoBatStart() end
+			task.delay(WHITE_TIME, function()
+				if Active and ActivationId == ThisActivation then
 					Active = false
-					ActivationId += 1
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 					if Key == "4_4" then Button.Text = "LAGGER\nOFF" end
 					if Key == "4_1" then stopAutoLeft()
 					elseif Key == "4_2" then stopAutoRight()
 					elseif Key == "2_1" then disableTPBat()
 					elseif Key == "3_2" then M.stopBatAimbot() end
-					return
 				end
-				Active = true
-				ActivationId += 1
-				local ThisActivation = ActivationId
-				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				if Key == "4_4" then Button.Text = "LAGGER\nON" end
-				if Key == "4_1" then startAutoLeft()
-				elseif Key == "4_2" then startAutoRight()
-				elseif Key == "2_1" then enableTPBat()
-				elseif Key == "3_2" then M.queueAutoBatStart() end
-				task.delay(WHITE_TIME, function()
-					if Active and ActivationId == ThisActivation then
-						Active = false
-						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-						if Key == "4_4" then Button.Text = "LAGGER\nOFF" end
-						if Key == "4_1" then stopAutoLeft()
-						elseif Key == "4_2" then stopAutoRight()
-						elseif Key == "2_1" then disableTPBat()
-						elseif Key == "3_2" then M.stopBatAimbot() end
-					end
-				end)
 			end)
-		end
+		end)
 	end
 end
 
 -- ============================================================
--- BOTÓN EXTRA IZQUIERDO + PANEL DESLIZANTE
--- Tamaño ajustado al marco blanco de la imagen
+-- BOTÓN EXTRA IZQUIERDO + PANEL DESLIZANTE (TAMAÑO AJUSTADO)
 -- ============================================================
 
--- Tamaño del marco dibujado en la imagen (~100x80 proporcional a la pantalla)
-local ANCHO_BOTON = 105
-local ALTO_BOTON = 85
-local ANCHO_PANEL = 105
-local ALTO_PANEL = 85
-
+-- CAMBIO: Tamaño grande para el cuadro izquierdo (35% ancho, 85% alto)
 local BotonExtra = Instance.new("TextButton")
 BotonExtra.Name = "BotonExtra"
-BotonExtra.Size = UDim2.fromOffset(ANCHO_BOTON, ALTO_BOTON)
-BotonExtra.Position = UDim2.new(0, 8, 0.5, -60)
-BotonExtra.AnchorPoint = Vector2.new(0, 0.5)
+BotonExtra.Size = UDim2.new(0.35, 0, 0.85, 0) 
+BotonExtra.Position = UDim2.new(0.02, 0, 0.1, 0) 
+BotonExtra.AnchorPoint = Vector2.new(0, 0)
 BotonExtra.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 BotonExtra.BorderSizePixel = 0
 BotonExtra.Text = ""
@@ -730,12 +724,12 @@ local CornerExtra = Instance.new("UICorner")
 CornerExtra.CornerRadius = UDim.new(0, 10)
 CornerExtra.Parent = BotonExtra
 
--- Panel negro oculto inicialmente a la derecha
+-- Panel negro deslizante (mismo tamaño grande)
 local Panel = Instance.new("Frame")
 Panel.Name = "Panel"
-Panel.Size = UDim2.fromOffset(ANCHO_PANEL, ALTO_PANEL)
+Panel.Size = UDim2.new(0.35, 0, 0.85, 0) 
 Panel.AnchorPoint = Vector2.new(0.5, 0.5)
-Panel.Position = UDim2.new(1.5, 0, 0.5, 0)
+Panel.Position = UDim2.new(1.5, 0, 0.5, 0) -- Inicia fuera de la pantalla
 Panel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Panel.BorderSizePixel = 0
 Panel.Visible = true
