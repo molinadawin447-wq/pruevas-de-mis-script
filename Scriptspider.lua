@@ -705,7 +705,7 @@ for Column = 1, 4 do
 end
 
 -- ============================================================
--- BOTÓN DECORATIVO (estilo VANTA VS) - ABRE EL PANEL
+-- BOTÓN DECORATIVO - ABRE EL PANEL
 -- ============================================================
 
 local BotonDecorativo = Instance.new("TextButton")
@@ -725,7 +725,7 @@ CornerBotonDecorativo.CornerRadius = UDim.new(0, 10)
 CornerBotonDecorativo.Parent = BotonDecorativo
 
 -- ============================================================
--- PANEL BRAXIL HUB (estilo ACE DUELS) CON SCROLL
+-- PANEL BRAXIL HUB
 -- ============================================================
 
 local PanelAdapt = Instance.new("Frame")
@@ -748,10 +748,7 @@ StrokePanelAdapt.Color = Color3.fromRGB(60, 60, 60)
 StrokePanelAdapt.Thickness = 1.5
 StrokePanelAdapt.Parent = PanelAdapt
 
--- ============================================================
--- HEADER: logo + título + subtítulo + LOCK + X
--- ============================================================
-
+-- HEADER
 local LogoFrame = Instance.new("Frame")
 LogoFrame.Size = UDim2.fromOffset(44, 44)
 LogoFrame.Position = UDim2.new(0, 12, 0, 14)
@@ -846,8 +843,7 @@ StrokeX.Thickness = 1
 StrokeX.Parent = BotonCerrarX
 
 -- ============================================================
--- PESTAÑAS: MOVEMENT, COMBAT, VISUALS, SETTINGS
--- Mismo grosor de letra, cada una con su espacio
+-- PESTAÑAS
 -- ============================================================
 
 local COLOR_ACTIVO_TEXTO = Color3.fromRGB(255, 255, 255)
@@ -862,7 +858,6 @@ TabsContainer.Position = UDim2.new(0, 10, 0, 68)
 TabsContainer.BackgroundTransparency = 1
 TabsContainer.Parent = PanelAdapt
 
--- 4 pestañas -> cada una 72px aprox con separación de 3px
 local TabNames = {"MOVEMENT", "COMBAT", "VISUALS", "SETTINGS"}
 local Tabs = {}
 local TabStrokes = {}
@@ -879,10 +874,10 @@ for i, name in ipairs(TabNames) do
 	tab.BorderSizePixel = 0
 	tab.Text = name
 	tab.TextColor3 = (i == 1) and COLOR_ACTIVO_TEXTO or COLOR_INACTIVO_TEXTO
-	tab.Font = Enum.Font.GothamBold   -- mismo grosor para todas
+	tab.Font = Enum.Font.GothamBold
 	tab.TextSize = 9
 	tab.TextWrapped = false
-	tab.TextScaled = true   -- se adapta al ancho del tab
+	tab.TextScaled = true
 	tab.AutoButtonColor = false
 	tab.Parent = TabsContainer
 
@@ -904,14 +899,54 @@ for i, name in ipairs(TabNames) do
 	TabStrokes[i] = stroke
 end
 
+-- ============================================================
+-- CONTENEDORES INDEPENDIENTES POR PESTAÑA (Scroll cada uno)
+-- ============================================================
+
+local TabContents = {}
+
+for i = 1, 4 do
+	local scroll = Instance.new("ScrollingFrame")
+	scroll.Name = "TabContent_" .. i
+	scroll.Size = UDim2.new(1, -12, 1, -110)
+	scroll.Position = UDim2.new(0, 6, 0, 106)
+	scroll.BackgroundTransparency = 1
+	scroll.BorderSizePixel = 0
+	scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+	scroll.ScrollBarThickness = 4
+	scroll.ScrollBarImageColor3 = Color3.fromRGB(120, 120, 120)
+	scroll.ScrollBarImageTransparency = 0.3
+	scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	scroll.ScrollingDirection = Enum.ScrollingDirection.Y
+	scroll.Visible = (i == 1) -- Solo MOVEMENT visible al inicio
+	scroll.Parent = PanelAdapt
+
+	local layout = Instance.new("UIListLayout")
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout.Padding = UDim.new(0, 6)
+	layout.Parent = scroll
+
+	local padding = Instance.new("UIPadding")
+	padding.PaddingTop = UDim.new(0, 4)
+	padding.PaddingBottom = UDim.new(0, 8)
+	padding.PaddingLeft = UDim.new(0, 4)
+	padding.PaddingRight = UDim.new(0, 8)
+	padding.Parent = scroll
+
+	TabContents[i] = scroll
+end
+
+-- Cambio de pestaña: alterna la visibilidad de cada contenedor
 local function setTabActiva(index)
 	for i, tab in ipairs(Tabs) do
 		if i == index then
 			tab.TextColor3 = COLOR_ACTIVO_TEXTO
 			TabStrokes[i].Color = COLOR_ACTIVO_BORDE
+			TabContents[i].Visible = true
 		else
 			tab.TextColor3 = COLOR_INACTIVO_TEXTO
 			TabStrokes[i].Color = COLOR_INACTIVO_BORDE
+			TabContents[i].Visible = false
 		end
 	end
 end
@@ -923,40 +958,10 @@ for i, tab in ipairs(Tabs) do
 end
 
 -- ============================================================
--- SCROLLING FRAME (para que se pueda bajar y quepan más funciones)
+-- HELPERS QUE RECIBEN UN PARENT (así cada apartado tiene sus propios items)
 -- ============================================================
 
-local ScrollContent = Instance.new("ScrollingFrame")
-ScrollContent.Name = "ScrollContent"
-ScrollContent.Size = UDim2.new(1, -12, 1, -110)
-ScrollContent.Position = UDim2.new(0, 6, 0, 106)
-ScrollContent.BackgroundTransparency = 1
-ScrollContent.BorderSizePixel = 0
-ScrollContent.CanvasSize = UDim2.new(0, 0, 0, 0)
-ScrollContent.ScrollBarThickness = 4
-ScrollContent.ScrollBarImageColor3 = Color3.fromRGB(120, 120, 120)
-ScrollContent.ScrollBarImageTransparency = 0.3
-ScrollContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
-ScrollContent.ScrollingDirection = Enum.ScrollingDirection.Y
-ScrollContent.Parent = PanelAdapt
-
-local ScrollLayout = Instance.new("UIListLayout")
-ScrollLayout.SortOrder = Enum.SortOrder.LayoutOrder
-ScrollLayout.Padding = UDim.new(0, 6)
-ScrollLayout.Parent = ScrollContent
-
-local ScrollPadding = Instance.new("UIPadding")
-ScrollPadding.PaddingTop = UDim.new(0, 4)
-ScrollPadding.PaddingBottom = UDim.new(0, 8)
-ScrollPadding.PaddingLeft = UDim.new(0, 4)
-ScrollPadding.PaddingRight = UDim.new(0, 8)
-ScrollPadding.Parent = ScrollContent
-
--- ============================================================
--- CONTENIDO DEL APARTADO MOVEMENT (con scroll)
--- ============================================================
-
-local function makeSectionLabel(texto)
+local function makeSectionLabel(parent, texto)
 	local label = Instance.new("TextLabel")
 	label.Size = UDim2.new(1, 0, 0, 16)
 	label.BackgroundTransparency = 1
@@ -965,16 +970,16 @@ local function makeSectionLabel(texto)
 	label.Font = Enum.Font.GothamBold
 	label.TextSize = 11
 	label.TextXAlignment = Enum.TextXAlignment.Left
-	label.Parent = ScrollContent
+	label.Parent = parent
 	return label
 end
 
-local function makeRow(textoIzq, valorDer)
+local function makeRow(parent, textoIzq, valorDer)
 	local fila = Instance.new("Frame")
 	fila.Size = UDim2.new(1, 0, 0, 36)
 	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	fila.BorderSizePixel = 0
-	fila.Parent = ScrollContent
+	fila.Parent = parent
 
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 8)
@@ -1025,12 +1030,12 @@ local function makeRow(textoIzq, valorDer)
 	return fila
 end
 
-local function makeRowSwitch()
+local function makeRowSwitch(parent)
 	local fila = Instance.new("Frame")
 	fila.Size = UDim2.new(1, 0, 0, 42)
 	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	fila.BorderSizePixel = 0
-	fila.Parent = ScrollContent
+	fila.Parent = parent
 
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 8)
@@ -1095,25 +1100,46 @@ local function makeRowSwitch()
 	return fila
 end
 
--- ===== CONSTRUIR CONTENIDO MOVEMENT =====
+-- ============================================================
+-- CONTENIDO DE "MOVEMENT" (índice 1) - ya existente
+-- ============================================================
 
-makeSectionLabel("AUTO SPEED")
-makeRowSwitch()
+local MovementContent = TabContents[1]
 
-makeSectionLabel("NORMAL SPEED")
-makeRow("Normal Speed", "63")
-makeRow("Carry Speed", "30")
-makeRow("Mode", "Normal")
+makeSectionLabel(MovementContent, "AUTO SPEED")
+makeRowSwitch(MovementContent)
 
-makeSectionLabel("LAGGER SPEED")
-makeRow("Lagger Speed", "35")
-makeRow("Lagger Carry Speed", "20")
-makeRow("Mode", "Lagger")
+makeSectionLabel(MovementContent, "NORMAL SPEED")
+makeRow(MovementContent, "Normal Speed", "63")
+makeRow(MovementContent, "Carry Speed", "30")
+makeRow(MovementContent, "Mode", "Normal")
 
-makeSectionLabel("TELEPORT")
-makeRow("TP Down", "Key: X")
-makeRow("TP Bat", "Key: Z")
-makeRow("TP Player", "Key: C")
+makeSectionLabel(MovementContent, "LAGGER SPEED")
+makeRow(MovementContent, "Lagger Speed", "35")
+makeRow(MovementContent, "Lagger Carry Speed", "20")
+makeRow(MovementContent, "Mode", "Lagger")
+
+makeSectionLabel(MovementContent, "TELEPORT")
+makeRow(MovementContent, "TP Down", "Key: X")
+makeRow(MovementContent, "TP Bat", "Key: Z")
+makeRow(MovementContent, "TP Player", "Key: C")
+
+-- ============================================================
+-- CONTENIDO DE "COMBAT" (índice 2) - VACÍO
+-- ============================================================
+-- local CombatContent = TabContents[2]
+-- makeSectionLabel(CombatContent, "...")
+-- makeRow(CombatContent, "...", "...")
+
+-- ============================================================
+-- CONTENIDO DE "VISUALS" (índice 3) - VACÍO
+-- ============================================================
+-- local VisualsContent = TabContents[3]
+
+-- ============================================================
+-- CONTENIDO DE "SETTINGS" (índice 4) - VACÍO
+-- ============================================================
+-- local SettingsContent = TabContents[4]
 
 -- ============================================================
 -- ANIMACIÓN DEL PANEL
