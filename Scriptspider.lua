@@ -837,9 +837,13 @@ end
 -- BOTÓN EXTRA IZQUIERDO + PANEL DESLIZANTE
 -- ============================================================
 
+-- Tamaño igual al marco dibujado (~120x120)
+local TAMANO_BOTON = 120
+local TAMANO_PANEL = 120
+
 local BotonExtra = Instance.new("TextButton")
 BotonExtra.Name = "BotonExtra"
-BotonExtra.Size = UDim2.fromOffset(60, 60)
+BotonExtra.Size = UDim2.fromOffset(TAMANO_BOTON, TAMANO_BOTON)
 BotonExtra.Position = UDim2.new(0, 8, 0.5, -60)
 BotonExtra.AnchorPoint = Vector2.new(0, 0.5)
 BotonExtra.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -855,7 +859,7 @@ CornerExtra.Parent = BotonExtra
 -- Panel cuadrado negro (oculto inicialmente a la derecha)
 local Panel = Instance.new("Frame")
 Panel.Name = "Panel"
-Panel.Size = UDim2.fromOffset(200, 200)
+Panel.Size = UDim2.fromOffset(TAMANO_PANEL, TAMANO_PANEL)
 Panel.AnchorPoint = Vector2.new(0.5, 0.5)
 Panel.Position = UDim2.new(1.5, 0, 0.5, 0) -- fuera de pantalla por la derecha
 Panel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
