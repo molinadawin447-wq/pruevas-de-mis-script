@@ -725,7 +725,7 @@ CornerBotonDecorativo.CornerRadius = UDim.new(0, 10)
 CornerBotonDecorativo.Parent = BotonDecorativo
 
 -- ============================================================
--- PANEL ADAPT (vacío) - Escondido a la derecha, aparece centrado
+-- PANEL BRAXIL HUB (vacío) - Escondido a la derecha, aparece centrado
 -- Pegado arriba y abajo con un poquito de separación, más delgado
 -- ============================================================
 
@@ -748,6 +748,20 @@ local StrokePanelAdapt = Instance.new("UIStroke")
 StrokePanelAdapt.Color = Color3.fromRGB(60, 60, 60)
 StrokePanelAdapt.Thickness = 1.5
 StrokePanelAdapt.Parent = PanelAdapt
+
+-- Título "BRAXIL HUB" en la parte superior izquierda del panel
+local TituloPanel = Instance.new("TextLabel")
+TituloPanel.Name = "TituloPanel"
+TituloPanel.Size = UDim2.new(1, -60, 0, 40)
+TituloPanel.Position = UDim2.new(0, 15, 0, 5)
+TituloPanel.BackgroundTransparency = 1
+TituloPanel.Text = "BRAXIL HUB"
+TituloPanel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TituloPanel.Font = Enum.Font.GothamBold
+TituloPanel.TextSize = 22
+TituloPanel.TextXAlignment = Enum.TextXAlignment.Left
+TituloPanel.TextYAlignment = Enum.TextYAlignment.Center
+TituloPanel.Parent = PanelAdapt
 
 -- Botón "X" para cerrar el panel
 local BotonCerrarX = Instance.new("TextButton")
