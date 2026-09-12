@@ -846,8 +846,7 @@ StrokeX.Thickness = 1
 StrokeX.Parent = BotonCerrarX
 
 -- ============================================================
--- PESTAÑAS: MOVEMENT, COMBAT, KEYBINDS, VISUALS, SETTINGS
--- Cada pestaña tiene su propio espacio, NO se montan
+-- PESTAÑAS: MOVEMENT, COMBAT, VISUALS, SETTINGS
 -- ============================================================
 
 local COLOR_ACTIVO_TEXTO = Color3.fromRGB(255, 255, 255)
@@ -862,13 +861,11 @@ TabsContainer.Position = UDim2.new(0, 10, 0, 68)
 TabsContainer.BackgroundTransparency = 1
 TabsContainer.Parent = PanelAdapt
 
-local TabNames = {"MOVEMENT", "COMBAT", "KEYBINDS", "VISUALS", "SETTINGS"}
+local TabNames = {"MOVEMENT", "COMBAT", "VISUALS", "SETTINGS"}
 local Tabs = {}
 local TabStrokes = {}
 
--- Ancho disponible: 300px (ancho del panel - 20 padding)
--- 5 pestañas -> cada una 60px aprox con separación de 3px
-local TabAncho = 60
+local TabAncho = 72
 local TabGap = 3
 
 for i, name in ipairs(TabNames) do
@@ -883,7 +880,7 @@ for i, name in ipairs(TabNames) do
 	tab.Font = Enum.Font.GothamBold
 	tab.TextSize = 9
 	tab.TextWrapped = false
-	tab.TextScaled = true   -- se adapta al ancho del tab
+	tab.TextScaled = true
 	tab.AutoButtonColor = false
 	tab.Parent = TabsContainer
 
@@ -924,7 +921,7 @@ for i, tab in ipairs(Tabs) do
 end
 
 -- ============================================================
--- SCROLLING FRAME (para que se pueda bajar y quepan más funciones)
+-- SCROLLING FRAME
 -- ============================================================
 
 local ScrollContent = Instance.new("ScrollingFrame")
@@ -954,10 +951,8 @@ ScrollPadding.PaddingRight = UDim.new(0, 8)
 ScrollPadding.Parent = ScrollContent
 
 -- ============================================================
--- CONTENIDO DEL APARTADO MOVEMENT (con scroll)
+-- HELPERS DEL CONTENIDO
 -- ============================================================
-
-local CONTENT_WIDTH = 300 - 12 - 12  -- ancho del scroll interior
 
 local function makeSectionLabel(texto)
 	local label = Instance.new("TextLabel")
@@ -972,6 +967,7 @@ local function makeSectionLabel(texto)
 	return label
 end
 
+-- Fila con valor de texto (no editable)
 local function makeRow(textoIzq, valorDer)
 	local fila = Instance.new("Frame")
 	fila.Size = UDim2.new(1, 0, 0, 36)
@@ -1028,6 +1024,112 @@ local function makeRow(textoIzq, valorDer)
 	return fila
 end
 
+-- Fila con valor NUMÉRICO EDITABLE (abre teclado del teléfono, rango 1-10)
+local function makeRowNumber(textoIzq, valorInicial)
+	local fila = Instance.new("Frame")
+	fila.Size = UDim2.new(1, 0, 0, 36)
+	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	fila.BorderSizePixel = 0
+	fila.Parent = ScrollContent
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 8)
+	corner.Parent = fila
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(45, 45, 45)
+	stroke.Thickness = 1
+	stroke.Parent = fila
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, -80, 1, 0)
+	label.Position = UDim2.new(0, 12, 0, 0)
+	label.BackgroundTransparency = 1
+	label.Text = textoIzq
+	label.TextColor3 = Color3.fromRGB(210, 210, 210)
+	label.Font = Enum.Font.Gotham
+	label.TextSize = 12
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = fila
+
+	-- Caja del valor (contiene el TextBox editable)
+	local cajaValor = Instance.new("Frame")
+	cajaValor.Size = UDim2.fromOffset(48, 22)
+	cajaValor.Position = UDim2.new(1, -10, 0.5, 0)
+	cajaValor.AnchorPoint = Vector2.new(1, 0.5)
+	cajaValor.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	cajaValor.BorderSizePixel = 0
+	cajaValor.Parent = fila
+
+	local cornerCaja = Instance.new("UICorner")
+	cornerCaja.CornerRadius = UDim.new(0, 6)
+	cornerCaja.Parent = cajaValor
+
+	local strokeCaja = Instance.new("UIStroke")
+	strokeCaja.Color = Color3.fromRGB(50, 50, 50)
+	strokeCaja.Thickness = 1
+	strokeCaja.Parent = cajaValor
+
+	-- TextBox editable con teclado numérico del teléfono
+	local valorBox = Instance.new("TextBox")
+	valorBox.Name = "ValorBox"
+	valorBox.Size = UDim2.new(1, -4, 1, -2)
+	valorBox.Position = UDim2.new(0, 2, 0, 1)
+	valorBox.BackgroundTransparency = 1
+	valorBox.BorderSizePixel = 0
+	valorBox.Text = tostring(valorInicial)
+	valorBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	valorBox.Font = Enum.Font.GothamBold
+	valorBox.TextSize = 12
+	valorBox.TextWrapped = false
+	valorBox.TextXAlignment = Enum.TextXAlignment.Center
+	valorBox.TextYAlignment = Enum.TextYAlignment.Center
+	valorBox.ClearTextOnFocus = false            -- Mantiene el número al tocar
+	valorBox.MultiLine = false
+	valorBox.TextEditable = true
+	valorBox.PlaceholderText = ""
+	-- Teclado numérico en teléfono
+	valorBox.KeyboardType = Enum.KeyboardType.NumberPad
+	valorBox.ReturnKeyType = Enum.ReturnKeyType.Done
+	valorBox.Parent = cajaValor
+
+	-- Resaltado visual al enfocar
+	valorBox.Focused:Connect(function()
+		TweenService:Create(strokeCaja, TweenInfo.new(0.15), {Color = Color3.fromRGB(255, 255, 255)}):Play()
+	end)
+
+	-- Al perder el foco o presionar Done: validar y ajustar
+	local function validarValor()
+		local num = tonumber(valorBox.Text)
+		if not num then
+			num = valorInicial
+		end
+		-- Redondear y limitar entre 1 y 10
+		num = math.floor(num + 0.5)
+		num = math.clamp(num, 1, 10)
+		valorBox.Text = tostring(num)
+		TweenService:Create(strokeCaja, TweenInfo.new(0.15), {Color = Color3.fromRGB(50, 50, 50)}):Play()
+	end
+
+	valorBox.FocusLost:Connect(function()
+		validarValor()
+	end)
+
+	-- Filtro: solo permitir dígitos mientras escribe
+	valorBox:GetPropertyChangedSignal("Text"):Connect(function()
+		local limpio = valorBox.Text:gsub("%D", "")  -- quitar todo lo que no sea dígito
+		if #limpio > 2 then
+			limpio = limpio:sub(1, 2)  -- máximo 2 dígitos (10)
+		end
+		if limpio ~= valorBox.Text then
+			valorBox.Text = limpio
+		end
+	end)
+
+	return fila
+end
+
+-- Fila con switch
 local function makeRowSwitch()
 	local fila = Instance.new("Frame")
 	fila.Size = UDim2.new(1, 0, 0, 42)
@@ -1098,20 +1200,22 @@ local function makeRowSwitch()
 	return fila
 end
 
--- ===== CONSTRUIR CONTENIDO MOVEMENT =====
+-- ============================================================
+-- CONTENIDO DEL APARTADO MOVEMENT
+-- ============================================================
 
 makeSectionLabel("AUTO SPEED")
 makeRowSwitch()
 
 makeSectionLabel("NORMAL SPEED")
-makeRow("Normal Speed", "63")
-makeRow("Carry Speed", "30")
-makeRow("Mode", "Normal")
+makeRowNumber("Normal Speed", 10)     -- editable 1-10
+makeRowNumber("Carry Speed", 10)      -- editable 1-10
+makeRow("Mode", "Normal")             -- texto, no editable
 
 makeSectionLabel("LAGGER SPEED")
-makeRow("Lagger Speed", "35")
-makeRow("Lagger Carry Speed", "20")
-makeRow("Mode", "Lagger")
+makeRowNumber("Lagger Speed", 10)         -- editable 1-10
+makeRowNumber("Lagger Carry Speed", 10)   -- editable 1-10
+makeRow("Mode", "Lagger")                 -- texto, no editable
 
 makeSectionLabel("TELEPORT")
 makeRow("TP Down", "Key: X")
