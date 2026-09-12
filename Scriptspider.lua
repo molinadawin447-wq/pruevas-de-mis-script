@@ -725,12 +725,12 @@ CornerBotonDecorativo.CornerRadius = UDim.new(0, 10)
 CornerBotonDecorativo.Parent = BotonDecorativo
 
 -- ============================================================
--- PANEL BRAXIL HUB
+-- PANEL BRAXIL HUB (estilo ACE DUELS)
 -- ============================================================
 
 local PanelAdapt = Instance.new("Frame")
 PanelAdapt.Name = "PanelAdapt"
-PanelAdapt.Size = UDim2.new(0, 280, 1, -40)
+PanelAdapt.Size = UDim2.new(0, 300, 1, -40)
 PanelAdapt.AnchorPoint = Vector2.new(0.5, 0.5)
 PanelAdapt.Position = UDim2.new(1.5, 0, 0.5, 0)
 PanelAdapt.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
@@ -747,243 +747,362 @@ StrokePanelAdapt.Color = Color3.fromRGB(60, 60, 60)
 StrokePanelAdapt.Thickness = 1.5
 StrokePanelAdapt.Parent = PanelAdapt
 
--- Título "BRAXIL HUB" al lado izquierdo de la X
+-- ============================================================
+-- HEADER DEL PANEL (logo + título + subtítulo + LOCK + X)
+-- ============================================================
+
+-- Logo (círculo con símbolo)
+local LogoFrame = Instance.new("Frame")
+LogoFrame.Size = UDim2.fromOffset(44, 44)
+LogoFrame.Position = UDim2.new(0, 12, 0, 14)
+LogoFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+LogoFrame.BorderSizePixel = 0
+LogoFrame.Parent = PanelAdapt
+
+local CornerLogo = Instance.new("UICorner")
+CornerLogo.CornerRadius = UDim.new(0, 10)
+CornerLogo.Parent = LogoFrame
+
+local StrokeLogo = Instance.new("UIStroke")
+StrokeLogo.Color = Color3.fromRGB(80, 80, 80)
+StrokeLogo.Thickness = 1
+StrokeLogo.Parent = LogoFrame
+
+local LogoText = Instance.new("TextLabel")
+LogoText.Size = UDim2.new(1, 0, 1, 0)
+LogoText.BackgroundTransparency = 1
+LogoText.Text = "♠"
+LogoText.TextColor3 = Color3.fromRGB(255, 255, 255)
+LogoText.Font = Enum.Font.GothamBold
+LogoText.TextSize = 26
+LogoText.Parent = LogoFrame
+
+-- Título "BRAXIL HUB"
 local TituloPanel = Instance.new("TextLabel")
 TituloPanel.Name = "TituloPanel"
-TituloPanel.Size = UDim2.new(0, 160, 0, 32)
-TituloPanel.Position = UDim2.new(1, -50, 0, 10)
-TituloPanel.AnchorPoint = Vector2.new(1, 0)
+TituloPanel.Size = UDim2.new(0, 140, 0, 24)
+TituloPanel.Position = UDim2.new(0, 64, 0, 16)
 TituloPanel.BackgroundTransparency = 1
 TituloPanel.Text = "BRAXIL HUB"
 TituloPanel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TituloPanel.Font = Enum.Font.GothamBold
-TituloPanel.TextSize = 20
-TituloPanel.TextXAlignment = Enum.TextXAlignment.Right
-TituloPanel.TextYAlignment = Enum.TextYAlignment.Center
+TituloPanel.TextSize = 17
+TituloPanel.TextXAlignment = Enum.TextXAlignment.Left
 TituloPanel.Parent = PanelAdapt
 
--- Botón "X" para cerrar el panel
+-- Subtítulo
+local SubtituloPanel = Instance.new("TextLabel")
+SubtituloPanel.Name = "SubtituloPanel"
+SubtituloPanel.Size = UDim2.new(0, 140, 0, 14)
+SubtituloPanel.Position = UDim2.new(0, 64, 0, 40)
+SubtituloPanel.BackgroundTransparency = 1
+SubtituloPanel.Text = "t.me/kurtis_scripts"
+SubtituloPanel.TextColor3 = Color3.fromRGB(140, 140, 140)
+SubtituloPanel.Font = Enum.Font.Gotham
+SubtituloPanel.TextSize = 10
+SubtituloPanel.TextXAlignment = Enum.TextXAlignment.Left
+SubtituloPanel.Parent = PanelAdapt
+
+-- Botón LOCK
+local LockBtn = Instance.new("TextButton")
+LockBtn.Name = "LockBtn"
+LockBtn.Size = UDim2.fromOffset(42, 22)
+LockBtn.Position = UDim2.new(1, -60, 0, 16)
+LockBtn.AnchorPoint = Vector2.new(1, 0)
+LockBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+LockBtn.BorderSizePixel = 0
+LockBtn.Text = "LOCK"
+LockBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+LockBtn.Font = Enum.Font.GothamBold
+LockBtn.TextSize = 10
+LockBtn.Parent = PanelAdapt
+
+local CornerLock = Instance.new("UICorner")
+CornerLock.CornerRadius = UDim.new(0, 6)
+CornerLock.Parent = LockBtn
+
+local StrokeLock = Instance.new("UIStroke")
+StrokeLock.Color = Color3.fromRGB(60, 60, 60)
+StrokeLock.Thickness = 1
+StrokeLock.Parent = LockBtn
+
+-- Botón X (cerrar)
 local BotonCerrarX = Instance.new("TextButton")
 BotonCerrarX.Name = "BotonCerrarX"
-BotonCerrarX.Size = UDim2.fromOffset(32, 32)
-BotonCerrarX.Position = UDim2.new(1, -10, 0, 10)
+BotonCerrarX.Size = UDim2.fromOffset(22, 22)
+BotonCerrarX.Position = UDim2.new(1, -12, 0, 16)
 BotonCerrarX.AnchorPoint = Vector2.new(1, 0)
-BotonCerrarX.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BotonCerrarX.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 BotonCerrarX.BorderSizePixel = 0
 BotonCerrarX.Text = "X"
 BotonCerrarX.TextColor3 = Color3.fromRGB(255, 255, 255)
 BotonCerrarX.Font = Enum.Font.GothamBold
-BotonCerrarX.TextSize = 18
-BotonCerrarX.AutoButtonColor = true
+BotonCerrarX.TextSize = 13
 BotonCerrarX.Parent = PanelAdapt
 
-local CornerBotonX = Instance.new("UICorner")
-CornerBotonX.CornerRadius = UDim.new(0, 8)
-CornerBotonX.Parent = BotonCerrarX
+local CornerX = Instance.new("UICorner")
+CornerX.CornerRadius = UDim.new(0, 6)
+CornerX.Parent = BotonCerrarX
+
+local StrokeX = Instance.new("UIStroke")
+StrokeX.Color = Color3.fromRGB(60, 60, 60)
+StrokeX.Thickness = 1
+StrokeX.Parent = BotonCerrarX
 
 -- ============================================================
--- PESTAÑAS: MOVEMENT y COMBAT
+-- PESTAÑAS: MOVEMENT, COMBAT, KEYBINDS, VISUALS, SETTINGS
 -- ============================================================
 
--- Colores para estados
 local COLOR_ACTIVO_TEXTO = Color3.fromRGB(255, 255, 255)
 local COLOR_ACTIVO_BORDE = Color3.fromRGB(255, 255, 255)
-local COLOR_INACTIVO_TEXTO = Color3.fromRGB(120, 120, 120)
-local COLOR_INACTIVO_BORDE = Color3.fromRGB(70, 70, 70)
+local COLOR_INACTIVO_TEXTO = Color3.fromRGB(130, 130, 130)
+local COLOR_INACTIVO_BORDE = Color3.fromRGB(50, 50, 50)
 
--- Pestaña MOVEMENT
-local TabMovement = Instance.new("TextButton")
-TabMovement.Name = "TabMovement"
-TabMovement.Size = UDim2.fromOffset(110, 30)
-TabMovement.Position = UDim2.new(0, 15, 0, 55)
-TabMovement.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-TabMovement.BorderSizePixel = 0
-TabMovement.Text = "MOVEMENT"
-TabMovement.TextColor3 = COLOR_ACTIVO_TEXTO
-TabMovement.Font = Enum.Font.GothamBold
-TabMovement.TextSize = 12
-TabMovement.AutoButtonColor = false
-TabMovement.Parent = PanelAdapt
+local TabsContainer = Instance.new("Frame")
+TabsContainer.Name = "TabsContainer"
+TabsContainer.Size = UDim2.new(1, -20, 0, 28)
+TabsContainer.Position = UDim2.new(0, 10, 0, 70)
+TabsContainer.BackgroundTransparency = 1
+TabsContainer.Parent = PanelAdapt
 
-local CornerTabMovement = Instance.new("UICorner")
-CornerTabMovement.CornerRadius = UDim.new(0, 6)
-CornerTabMovement.Parent = TabMovement
+local TabNames = {"MOVEMENT", "COMBAT", "KEYBINDS", "VISUALS", "SETTINGS"}
+local Tabs = {}
+local TabStrokes = {}
+local tabW = 1 / #TabNames
 
-local StrokeTabMovement = Instance.new("UIStroke")
-StrokeTabMovement.Color = COLOR_ACTIVO_BORDE
-StrokeTabMovement.Thickness = 1.5
-StrokeTabMovement.Parent = TabMovement
+for i, name in ipairs(TabNames) do
+	local tab = Instance.new("TextButton")
+	tab.Name = "Tab_" .. name
+	tab.Size = UDim2.new(tabW, -3, 1, 0)
+	tab.Position = UDim2.new((i-1) * tabW, 1.5, 0, 0)
+	tab.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	tab.BorderSizePixel = 0
+	tab.Text = name
+	tab.TextColor3 = (i == 1) and COLOR_ACTIVO_TEXTO or COLOR_INACTIVO_TEXTO
+	tab.Font = Enum.Font.GothamBold
+	tab.TextSize = 8
+	tab.AutoButtonColor = false
+	tab.Parent = TabsContainer
 
--- Pestaña COMBAT
-local TabCombat = Instance.new("TextButton")
-TabCombat.Name = "TabCombat"
-TabCombat.Size = UDim2.fromOffset(110, 30)
-TabCombat.Position = UDim2.new(0, 135, 0, 55)
-TabCombat.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-TabCombat.BorderSizePixel = 0
-TabCombat.Text = "COMBAT"
-TabCombat.TextColor3 = COLOR_INACTIVO_TEXTO
-TabCombat.Font = Enum.Font.GothamBold
-TabCombat.TextSize = 12
-TabCombat.AutoButtonColor = false
-TabCombat.Parent = PanelAdapt
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 6)
+	corner.Parent = tab
 
-local CornerTabCombat = Instance.new("UICorner")
-CornerTabCombat.CornerRadius = UDim.new(0, 6)
-CornerTabCombat.Parent = TabCombat
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = (i == 1) and COLOR_ACTIVO_BORDE or COLOR_INACTIVO_BORDE
+	stroke.Thickness = 1
+	stroke.Parent = tab
 
-local StrokeTabCombat = Instance.new("UIStroke")
-StrokeTabCombat.Color = COLOR_INACTIVO_BORDE
-StrokeTabCombat.Thickness = 1.5
-StrokeTabCombat.Parent = TabCombat
+	Tabs[i] = tab
+	TabStrokes[i] = stroke
+end
 
--- Función para actualizar el estado visual de las pestañas
-local function setTabActiva(tab)
-	if tab == "movement" then
-		TabMovement.TextColor3 = COLOR_ACTIVO_TEXTO
-		StrokeTabMovement.Color = COLOR_ACTIVO_BORDE
-		TabCombat.TextColor3 = COLOR_INACTIVO_TEXTO
-		StrokeTabCombat.Color = COLOR_INACTIVO_BORDE
-	elseif tab == "combat" then
-		TabCombat.TextColor3 = COLOR_ACTIVO_TEXTO
-		StrokeTabCombat.Color = COLOR_ACTIVO_BORDE
-		TabMovement.TextColor3 = COLOR_INACTIVO_TEXTO
-		StrokeTabMovement.Color = COLOR_INACTIVO_BORDE
+local function setTabActiva(index)
+	for i, tab in ipairs(Tabs) do
+		if i == index then
+			tab.TextColor3 = COLOR_ACTIVO_TEXTO
+			TabStrokes[i].Color = COLOR_ACTIVO_BORDE
+		else
+			tab.TextColor3 = COLOR_INACTIVO_TEXTO
+			TabStrokes[i].Color = COLOR_INACTIVO_BORDE
+		end
 	end
 end
 
-TabMovement.Activated:Connect(function()
-	setTabActiva("movement")
-end)
-
-TabCombat.Activated:Connect(function()
-	setTabActiva("combat")
-end)
+for i, tab in ipairs(Tabs) do
+	tab.Activated:Connect(function()
+		setTabActiva(i)
+	end)
+end
 
 -- ============================================================
 -- CONTENIDO DE LA PESTAÑA MOVEMENT
 -- ============================================================
 
--- Título "Auto Speed" (más grande)
-local LabelAutoSpeed = Instance.new("TextLabel")
-LabelAutoSpeed.Name = "LabelAutoSpeed"
-LabelAutoSpeed.Size = UDim2.new(1, -30, 0, 20)
-LabelAutoSpeed.Position = UDim2.new(0, 15, 0, 95)
-LabelAutoSpeed.BackgroundTransparency = 1
-LabelAutoSpeed.Text = "Auto Speed"
-LabelAutoSpeed.TextColor3 = Color3.fromRGB(220, 220, 220)
-LabelAutoSpeed.Font = Enum.Font.GothamBold
-LabelAutoSpeed.TextSize = 15
-LabelAutoSpeed.TextXAlignment = Enum.TextXAlignment.Left
-LabelAutoSpeed.Parent = PanelAdapt
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, 0, 1, -115)
+ContentFrame.Position = UDim2.new(0, 0, 0, 108)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.Parent = PanelAdapt
 
--- Contenedor con texto "Auto Carry Spd" + switch
-local ContenedorAutoCarry = Instance.new("Frame")
-ContenedorAutoCarry.Name = "ContenedorAutoCarry"
-ContenedorAutoCarry.Size = UDim2.new(1, -30, 0, 40)
-ContenedorAutoCarry.Position = UDim2.new(0, 15, 0, 120)
-ContenedorAutoCarry.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-ContenedorAutoCarry.BorderSizePixel = 0
-ContenedorAutoCarry.Parent = PanelAdapt
+local Y = 0
 
-local CornerContenedor = Instance.new("UICorner")
-CornerContenedor.CornerRadius = UDim.new(0, 8)
-CornerContenedor.Parent = ContenedorAutoCarry
+-- Helper: etiqueta de sección
+local function makeSectionLabel(text)
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, -20, 0, 16)
+	label.Position = UDim2.new(0, 10, 0, Y)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.Font = Enum.Font.GothamBold
+	label.TextSize = 11
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = ContentFrame
+	Y = Y + 20
+end
 
-local StrokeContenedor = Instance.new("UIStroke")
-StrokeContenedor.Color = Color3.fromRGB(50, 50, 50)
-StrokeContenedor.Thickness = 1
-StrokeContenedor.Parent = ContenedorAutoCarry
+-- Helper: fila con texto izquierdo y caja de valor derecha
+local function makeRow(textoIzq, valorDer)
+	local fila = Instance.new("Frame")
+	fila.Size = UDim2.new(1, -20, 0, 36)
+	fila.Position = UDim2.new(0, 10, 0, Y)
+	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	fila.BorderSizePixel = 0
+	fila.Parent = ContentFrame
 
--- Texto "Auto Carry Spd"
-local LabelAutoCarry = Instance.new("TextLabel")
-LabelAutoCarry.Name = "LabelAutoCarry"
-LabelAutoCarry.Size = UDim2.new(1, -70, 1, 0)
-LabelAutoCarry.Position = UDim2.new(0, 10, 0, 0)
-LabelAutoCarry.BackgroundTransparency = 1
-LabelAutoCarry.Text = "Auto Carry Spd"
-LabelAutoCarry.TextColor3 = Color3.fromRGB(255, 255, 255)
-LabelAutoCarry.Font = Enum.Font.GothamBold
-LabelAutoCarry.TextSize = 15
-LabelAutoCarry.TextXAlignment = Enum.TextXAlignment.Left
-LabelAutoCarry.TextYAlignment = Enum.TextYAlignment.Center
-LabelAutoCarry.Parent = ContenedorAutoCarry
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 8)
+	corner.Parent = fila
 
--- Switch redondeado con bolita blanca
-local SwitchAutoCarry = Instance.new("TextButton")
-SwitchAutoCarry.Name = "SwitchAutoCarry"
-SwitchAutoCarry.Size = UDim2.fromOffset(50, 26)
-SwitchAutoCarry.Position = UDim2.new(1, -10, 0.5, 0)
-SwitchAutoCarry.AnchorPoint = Vector2.new(1, 0.5)
-SwitchAutoCarry.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-SwitchAutoCarry.BorderSizePixel = 0
-SwitchAutoCarry.Text = ""
-SwitchAutoCarry.AutoButtonColor = false
-SwitchAutoCarry.Parent = ContenedorAutoCarry
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(45, 45, 45)
+	stroke.Thickness = 1
+	stroke.Parent = fila
 
-local CornerSwitch = Instance.new("UICorner")
-CornerSwitch.CornerRadius = UDim.new(0.5, 0)
-CornerSwitch.Parent = SwitchAutoCarry
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, -80, 1, 0)
+	label.Position = UDim2.new(0, 12, 0, 0)
+	label.BackgroundTransparency = 1
+	label.Text = textoIzq
+	label.TextColor3 = Color3.fromRGB(210, 210, 210)
+	label.Font = Enum.Font.Gotham
+	label.TextSize = 12
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = fila
 
--- Bolita blanca dentro del switch
-local BolitaSwitch = Instance.new("Frame")
-BolitaSwitch.Name = "BolitaSwitch"
-BolitaSwitch.Size = UDim2.fromOffset(20, 20)
-BolitaSwitch.Position = UDim2.new(0, 3, 0.5, 0)
-BolitaSwitch.AnchorPoint = Vector2.new(0, 0.5)
-BolitaSwitch.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-BolitaSwitch.BorderSizePixel = 0
-BolitaSwitch.Parent = SwitchAutoCarry
+	local cajaValor = Instance.new("Frame")
+	cajaValor.Size = UDim2.fromOffset(48, 22)
+	cajaValor.Position = UDim2.new(1, -10, 0.5, 0)
+	cajaValor.AnchorPoint = Vector2.new(1, 0.5)
+	cajaValor.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	cajaValor.BorderSizePixel = 0
+	cajaValor.Parent = fila
 
-local CornerBolita = Instance.new("UICorner")
-CornerBolita.CornerRadius = UDim.new(0.5, 0)
-CornerBolita.Parent = BolitaSwitch
+	local cornerCaja = Instance.new("UICorner")
+	cornerCaja.CornerRadius = UDim.new(0, 6)
+	cornerCaja.Parent = cajaValor
 
--- Estado del switch
-local autoCarryActivo = false
+	local strokeCaja = Instance.new("UIStroke")
+	strokeCaja.Color = Color3.fromRGB(50, 50, 50)
+	strokeCaja.Thickness = 1
+	strokeCaja.Parent = cajaValor
 
--- Posiciones de la bolita
-local BOLITA_IZQ = UDim2.new(0, 3, 0.5, 0)   -- apagado (izquierda)
-local BOLITA_DER = UDim2.new(1, -23, 0.5, 0) -- prendido (derecha)
+	local valorLabel = Instance.new("TextLabel")
+	valorLabel.Size = UDim2.new(1, 0, 1, 0)
+	valorLabel.BackgroundTransparency = 1
+	valorLabel.Text = valorDer
+	valorLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	valorLabel.Font = Enum.Font.GothamBold
+	valorLabel.TextSize = 12
+	valorLabel.Parent = cajaValor
 
-SwitchAutoCarry.Activated:Connect(function()
-	autoCarryActivo = not autoCarryActivo
-	if autoCarryActivo then
-		-- Prendido: bolita a la derecha, switch BLANCO, bolita negra
-		TweenService:Create(
-			BolitaSwitch,
-			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{Position = BOLITA_DER}
-		):Play()
-		TweenService:Create(
-			SwitchAutoCarry,
-			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{BackgroundColor3 = Color3.fromRGB(255, 255, 255)}
-		):Play()
-		TweenService:Create(
-			BolitaSwitch,
-			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{BackgroundColor3 = Color3.fromRGB(0, 0, 0)}
-		):Play()
-	else
-		-- Apagado: bolita a la izquierda, switch gris, bolita blanca
-		TweenService:Create(
-			BolitaSwitch,
-			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{Position = BOLITA_IZQ}
-		):Play()
-		TweenService:Create(
-			SwitchAutoCarry,
-			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
-		):Play()
-		TweenService:Create(
-			BolitaSwitch,
-			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{BackgroundColor3 = Color3.fromRGB(255, 255, 255)}
-		):Play()
-	end
-end)
+	Y = Y + 42
+	return fila
+end
+
+-- Helper: fila con switch (Auto Carry Speed)
+local function makeRowSwitch()
+	local fila = Instance.new("Frame")
+	fila.Size = UDim2.new(1, -20, 0, 42)
+	fila.Position = UDim2.new(0, 10, 0, Y)
+	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	fila.BorderSizePixel = 0
+	fila.Parent = ContentFrame
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 8)
+	corner.Parent = fila
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(45, 45, 45)
+	stroke.Thickness = 1
+	stroke.Parent = fila
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, -80, 1, 0)
+	label.Position = UDim2.new(0, 12, 0, 0)
+	label.BackgroundTransparency = 1
+	label.Text = "Auto Carry Speed"
+	label.TextColor3 = Color3.fromRGB(210, 210, 210)
+	label.Font = Enum.Font.Gotham
+	label.TextSize = 12
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = fila
+
+	local Switch = Instance.new("TextButton")
+	Switch.Name = "SwitchAutoCarry"
+	Switch.Size = UDim2.fromOffset(50, 26)
+	Switch.Position = UDim2.new(1, -10, 0.5, 0)
+	Switch.AnchorPoint = Vector2.new(1, 0.5)
+	Switch.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	Switch.BorderSizePixel = 0
+	Switch.Text = ""
+	Switch.AutoButtonColor = false
+	Switch.Parent = fila
+
+	local cornerSwitch = Instance.new("UICorner")
+	cornerSwitch.CornerRadius = UDim.new(0.5, 0)
+	cornerSwitch.Parent = Switch
+
+	local Bolita = Instance.new("Frame")
+	Bolita.Name = "BolitaSwitch"
+	Bolita.Size = UDim2.fromOffset(20, 20)
+	Bolita.Position = UDim2.new(0, 3, 0.5, 0)
+	Bolita.AnchorPoint = Vector2.new(0, 0.5)
+	Bolita.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Bolita.BorderSizePixel = 0
+	Bolita.Parent = Switch
+
+	local cornerBolita = Instance.new("UICorner")
+	cornerBolita.CornerRadius = UDim.new(0.5, 0)
+	cornerBolita.Parent = Bolita
+
+	local activo = false
+	Switch.Activated:Connect(function()
+		activo = not activo
+		if activo then
+			TweenService:Create(Bolita, TweenInfo.new(0.2), {Position = UDim2.new(1, -23, 0.5, 0)}):Play()
+			TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+			TweenService:Create(Bolita, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}):Play()
+		else
+			TweenService:Create(Bolita, TweenInfo.new(0.2), {Position = UDim2.new(0, 3, 0.5, 0)}):Play()
+			TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+			TweenService:Create(Bolita, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+		end
+	end)
+
+	Y = Y + 48
+	return fila
+end
+
+-- ============ CONSTRUIR CONTENIDO MOVEMENT ============
+
+-- AUTO SPEED
+makeSectionLabel("AUTO SPEED")
+makeRowSwitch()
+
+Y = Y + 4
+
+-- NORMAL SPEED
+makeSectionLabel("NORMAL SPEED")
+makeRow("Normal Speed", "63")
+makeRow("Carry Speed", "30")
+makeRow("Mode", "Normal")
+
+Y = Y + 4
+
+-- LAGGER SPEED
+makeSectionLabel("LAGGER SPEED")
+makeRow("Lagger Speed", "35")
+makeRow("Lagger Carry Speed", "20")
+makeRow("Mode", "Lagger")
+
+Y = Y + 4
+
+-- TELEPORT
+makeSectionLabel("TELEPORT")
 
 -- ============================================================
 -- ANIMACIÓN DEL PANEL
