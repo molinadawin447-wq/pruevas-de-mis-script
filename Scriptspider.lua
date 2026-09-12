@@ -726,11 +726,14 @@ CornerBotonDecorativo.Parent = BotonDecorativo
 
 -- ============================================================
 -- PANEL ADAPT (vacío) - Escondido a la derecha, aparece centrado
+-- con separación arriba y abajo de la pantalla
 -- ============================================================
 
+-- Panel con tamaño que deja espacio arriba y abajo (no pegado a bordes)
+-- Usamos escala + offset negativo para dejar margen visible
 local PanelAdapt = Instance.new("Frame")
 PanelAdapt.Name = "PanelAdapt"
-PanelAdapt.Size = UDim2.fromOffset(320, 420)
+PanelAdapt.Size = UDim2.new(0, 320, 1, -120)   -- alto = pantalla - 120px (60px arriba + 60px abajo)
 PanelAdapt.AnchorPoint = Vector2.new(0.5, 0.5)
 PanelAdapt.Position = UDim2.new(1.5, 0, 0.5, 0)  -- fuera de pantalla (derecha)
 PanelAdapt.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
