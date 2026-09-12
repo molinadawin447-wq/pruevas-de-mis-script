@@ -706,16 +706,14 @@ end
 
 -- ============================================================
 -- BOTÓN EXTRA IZQUIERDO + PANEL DESLIZANTE
--- Tamaño agrandado para cubrir el área azul de la imagen
+-- Tamaño ajustado al marco blanco de la imagen
 -- ============================================================
 
--- Tamaño del botón de la izquierda (NO TOCADO)
+-- Tamaño del marco dibujado en la imagen (~100x80 proporcional a la pantalla)
 local ANCHO_BOTON = 105
 local ALTO_BOTON = 85
-
--- TAMAÑO DEL PANEL AGRANDADO (Cubre todo el área azul)
-local ANCHO_PANEL = 550
-local ALTO_PANEL = 650
+local ANCHO_PANEL = 130   -- Más ancho (antes 105)
+local ALTO_PANEL = 110    -- Más alto (antes 85)
 
 local BotonExtra = Instance.new("TextButton")
 BotonExtra.Name = "BotonExtra"
@@ -735,7 +733,7 @@ CornerExtra.Parent = BotonExtra
 -- Panel negro oculto inicialmente a la derecha
 local Panel = Instance.new("Frame")
 Panel.Name = "Panel"
-Panel.Size = UDim2.fromOffset(ANCHO_PANEL, ALTO_PANEL) -- ¡AQUÍ ESTÁ EL CAMBIO DE TAMAÑO!
+Panel.Size = UDim2.fromOffset(ANCHO_PANEL, ALTO_PANEL)
 Panel.AnchorPoint = Vector2.new(0.5, 0.5)
 Panel.Position = UDim2.new(1.5, 0, 0.5, 0)
 Panel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
