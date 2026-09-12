@@ -8,6 +8,7 @@
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
@@ -833,7 +834,7 @@ for Column = 1, 4 do
 end
 
 -- ============================================================
--- BOTÓN EXTRA IZQUIERDO (sin texto, mismo estilo)
+-- BOTÓN EXTRA IZQUIERDO + PANEL DESLIZANTE
 -- ============================================================
 
 local BotonExtra = Instance.new("TextButton")
@@ -851,10 +852,94 @@ local CornerExtra = Instance.new("UICorner")
 CornerExtra.CornerRadius = UDim.new(0, 10)
 CornerExtra.Parent = BotonExtra
 
+-- Panel cuadrado negro (oculto inicialmente a la derecha)
+local Panel = Instance.new("Frame")
+Panel.Name = "Panel"
+Panel.Size = UDim2.fromOffset(200, 200)
+Panel.AnchorPoint = Vector2.new(0.5, 0.5)
+Panel.Position = UDim2.new(1.5, 0, 0.5, 0) -- fuera de pantalla por la derecha
+Panel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Panel.BorderSizePixel = 0
+Panel.Visible = true
+Panel.Parent = ScreenGui
+
+local CornerPanel = Instance.new("UICorner")
+CornerPanel.CornerRadius = UDim.new(0, 12)
+CornerPanel.Parent = Panel
+
+-- Botón "--" en la esquina superior derecha del panel
+local CerrarPanel = Instance.new("TextButton")
+CerrarPanel.Name = "CerrarPanel"
+CerrarPanel.Size = UDim2.fromOffset(30, 26)
+CerrarPanel.Position = UDim2.new(1, -6, 0, 6)
+CerrarPanel.AnchorPoint = Vector2.new(1, 0)
+CerrarPanel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+CerrarPanel.BackgroundTransparency = 1
+CerrarPanel.BorderSizePixel = 0
+CerrarPanel.Text = "--"
+CerrarPanel.TextColor3 = Color3.fromRGB(255, 255, 255)
+CerrarPanel.Font = Enum.Font.GothamBold
+CerrarPanel.TextSize = 20
+CerrarPanel.AutoButtonColor = false
+CerrarPanel.Parent = Panel
+
+local CornerCerrar = Instance.new("UICorner")
+CornerCerrar.CornerRadius = UDim.new(0, 6)
+CornerCerrar.Parent = CerrarPanel
+
+-- Posición oculta (a la derecha) y posición centrada
+local POS_OCULTO = UDim2.new(1.5, 0, 0.5, 0)
+local POS_CENTRO = UDim2.new(0.5, 0, 0.5, 0)
+
+local panelVisible = false
+local animando = false
+
+-- Abrir panel (deslizar desde la derecha hasta el centro)
 BotonExtra.Activated:Connect(function()
-	if Main.Visible then
-		Main.Visible = false
+	if animando then return end
+	animando = true
+
+	if panelVisible then
+		-- Si ya está visible, lo devolvemos por la derecha
+		local tweenOut = TweenService:Create(
+			Panel,
+			TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+			{Position = POS_OCULTO}
+		)
+		tweenOut:Play()
+		tweenOut.Completed:Connect(function()
+			panelVisible = false
+			animando = false
+		end)
 	else
-		Main.Visible = true
+		-- Aparece desde la derecha y se desliza al centro
+		Panel.Position = POS_OCULTO
+		local tweenIn = TweenService:Create(
+			Panel,
+			TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{Position = POS_CENTRO}
+		)
+		tweenIn:Play()
+		tweenIn.Completed:Connect(function()
+			panelVisible = true
+			animando = false
+		end)
 	end
+end)
+
+-- Botón "--" dentro del panel: devuelve el panel por la derecha
+CerrarPanel.Activated:Connect(function()
+	if animando then return end
+	animando = true
+
+	local tweenOut = TweenService:Create(
+		Panel,
+		TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+		{Position = POS_OCULTO}
+	)
+	tweenOut:Play()
+	tweenOut.Completed:Connect(function()
+		panelVisible = false
+		animando = false
+	end)
 end)
