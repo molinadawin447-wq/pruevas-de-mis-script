@@ -705,7 +705,7 @@ for Column = 1, 4 do
 end
 
 -- ============================================================
--- BOTÓN DECORATIVO (estilo VANTA VS) - ABRE EL PANEL ADAPT
+-- BOTÓN DECORATIVO (estilo VANTA VS) - ABRE EL PANEL
 -- ============================================================
 
 local BotonDecorativo = Instance.new("TextButton")
@@ -725,16 +725,15 @@ CornerBotonDecorativo.CornerRadius = UDim.new(0, 10)
 CornerBotonDecorativo.Parent = BotonDecorativo
 
 -- ============================================================
--- PANEL BRAXIL HUB (vacío) - Escondido a la derecha, aparece centrado
+-- PANEL BRAXIL HUB - Escondido a la derecha, aparece centrado
 -- Pegado arriba y abajo con un poquito de separación, más delgado
 -- ============================================================
 
--- Panel: ancho más delgado (280), alto casi toda la pantalla con 20px de margen arriba y abajo
 local PanelAdapt = Instance.new("Frame")
 PanelAdapt.Name = "PanelAdapt"
-PanelAdapt.Size = UDim2.new(0, 280, 1, -40)   -- alto = pantalla - 40px (20px arriba + 20px abajo)
+PanelAdapt.Size = UDim2.new(0, 280, 1, -40)
 PanelAdapt.AnchorPoint = Vector2.new(0.5, 0.5)
-PanelAdapt.Position = UDim2.new(1.5, 0, 0.5, 0)  -- fuera de pantalla (derecha)
+PanelAdapt.Position = UDim2.new(1.5, 0, 0.5, 0)
 PanelAdapt.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 PanelAdapt.BorderSizePixel = 0
 PanelAdapt.Visible = true
@@ -749,17 +748,18 @@ StrokePanelAdapt.Color = Color3.fromRGB(60, 60, 60)
 StrokePanelAdapt.Thickness = 1.5
 StrokePanelAdapt.Parent = PanelAdapt
 
--- Título "BRAXIL HUB" en la parte superior izquierda del panel
+-- Título "BRAXIL HUB" justo al lado izquierdo de la X
 local TituloPanel = Instance.new("TextLabel")
 TituloPanel.Name = "TituloPanel"
-TituloPanel.Size = UDim2.new(1, -60, 0, 40)
-TituloPanel.Position = UDim2.new(0, 15, 0, 5)
+TituloPanel.Size = UDim2.new(0, 160, 0, 32)
+TituloPanel.Position = UDim2.new(1, -50, 0, 10)   -- pegado al lado izquierdo de la X
+TituloPanel.AnchorPoint = Vector2.new(1, 0)
 TituloPanel.BackgroundTransparency = 1
 TituloPanel.Text = "BRAXIL HUB"
 TituloPanel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TituloPanel.Font = Enum.Font.GothamBold
-TituloPanel.TextSize = 22
-TituloPanel.TextXAlignment = Enum.TextXAlignment.Left
+TituloPanel.TextSize = 20
+TituloPanel.TextXAlignment = Enum.TextXAlignment.Right
 TituloPanel.TextYAlignment = Enum.TextYAlignment.Center
 TituloPanel.Parent = PanelAdapt
 
@@ -783,13 +783,12 @@ CornerBotonX.CornerRadius = UDim.new(0, 8)
 CornerBotonX.Parent = BotonCerrarX
 
 -- Posiciones del panel
-local POS_OCULTO = UDim2.new(1.5, 0, 0.5, 0)   -- escondido a la derecha
-local POS_CENTRO = UDim2.new(0.5, 0, 0.5, 0)   -- centrado en pantalla
+local POS_OCULTO = UDim2.new(1.5, 0, 0.5, 0)
+local POS_CENTRO = UDim2.new(0.5, 0, 0.5, 0)
 
 local panelVisible = false
 local animando = false
 
--- Función para abrir el panel
 local function abrirPanel()
 	if animando or panelVisible then return end
 	animando = true
@@ -806,7 +805,6 @@ local function abrirPanel()
 	end)
 end
 
--- Función para cerrar el panel (se devuelve por donde vino)
 local function cerrarPanel()
 	if animando or not panelVisible then return end
 	animando = true
@@ -822,12 +820,10 @@ local function cerrarPanel()
 	end)
 end
 
--- El botón decorativo abre el panel
 BotonDecorativo.Activated:Connect(function()
 	abrirPanel()
 end)
 
--- La X cierra el panel y lo devuelve por donde vino
 BotonCerrarX.Activated:Connect(function()
 	cerrarPanel()
 end)
