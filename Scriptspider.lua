@@ -726,7 +726,6 @@ CornerBotonDecorativo.Parent = BotonDecorativo
 
 -- ============================================================
 -- PANEL BRAXIL HUB - Escondido a la derecha, aparece centrado
--- Pegado arriba y abajo con un poquito de separación, más delgado
 -- ============================================================
 
 local PanelAdapt = Instance.new("Frame")
@@ -748,11 +747,11 @@ StrokePanelAdapt.Color = Color3.fromRGB(60, 60, 60)
 StrokePanelAdapt.Thickness = 1.5
 StrokePanelAdapt.Parent = PanelAdapt
 
--- Título "BRAXIL HUB" justo al lado izquierdo de la X
+-- Título "BRAXIL HUB" al lado izquierdo de la X
 local TituloPanel = Instance.new("TextLabel")
 TituloPanel.Name = "TituloPanel"
 TituloPanel.Size = UDim2.new(0, 160, 0, 32)
-TituloPanel.Position = UDim2.new(1, -50, 0, 10)   -- pegado al lado izquierdo de la X
+TituloPanel.Position = UDim2.new(1, -50, 0, 10)
 TituloPanel.AnchorPoint = Vector2.new(1, 0)
 TituloPanel.BackgroundTransparency = 1
 TituloPanel.Text = "BRAXIL HUB"
@@ -782,7 +781,138 @@ local CornerBotonX = Instance.new("UICorner")
 CornerBotonX.CornerRadius = UDim.new(0, 8)
 CornerBotonX.Parent = BotonCerrarX
 
--- Posiciones del panel
+-- ============================================================
+-- SECCIÓN MOVEMENT (pegada al lado izquierdo del panel)
+-- ============================================================
+
+-- Título "MOVEMENT" (pequeño)
+local LabelMovement = Instance.new("TextLabel")
+LabelMovement.Name = "LabelMovement"
+LabelMovement.Size = UDim2.new(1, -30, 0, 18)
+LabelMovement.Position = UDim2.new(0, 15, 0, 55)
+LabelMovement.BackgroundTransparency = 1
+LabelMovement.Text = "MOVEMENT"
+LabelMovement.TextColor3 = Color3.fromRGB(200, 200, 200)
+LabelMovement.Font = Enum.Font.GothamBold
+LabelMovement.TextSize = 12
+LabelMovement.TextXAlignment = Enum.TextXAlignment.Left
+LabelMovement.Parent = PanelAdapt
+
+-- Subtítulo "Auto Speed" (pequeño)
+local LabelAutoSpeed = Instance.new("TextLabel")
+LabelAutoSpeed.Name = "LabelAutoSpeed"
+LabelAutoSpeed.Size = UDim2.new(1, -30, 0, 16)
+LabelAutoSpeed.Position = UDim2.new(0, 15, 0, 75)
+LabelAutoSpeed.BackgroundTransparency = 1
+LabelAutoSpeed.Text = "Auto Speed"
+LabelAutoSpeed.TextColor3 = Color3.fromRGB(160, 160, 160)
+LabelAutoSpeed.Font = Enum.Font.Gotham
+LabelAutoSpeed.TextSize = 11
+LabelAutoSpeed.TextXAlignment = Enum.TextXAlignment.Left
+LabelAutoSpeed.Parent = PanelAdapt
+
+-- Texto grande "Auto Carry Spd" + switch al lado derecho
+local ContenedorAutoCarry = Instance.new("Frame")
+ContenedorAutoCarry.Name = "ContenedorAutoCarry"
+ContenedorAutoCarry.Size = UDim2.new(1, -30, 0, 40)
+ContenedorAutoCarry.Position = UDim2.new(0, 15, 0, 95)
+ContenedorAutoCarry.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ContenedorAutoCarry.BorderSizePixel = 0
+ContenedorAutoCarry.Parent = PanelAdapt
+
+local CornerContenedor = Instance.new("UICorner")
+CornerContenedor.CornerRadius = UDim.new(0, 8)
+CornerContenedor.Parent = ContenedorAutoCarry
+
+local StrokeContenedor = Instance.new("UIStroke")
+StrokeContenedor.Color = Color3.fromRGB(50, 50, 50)
+StrokeContenedor.Thickness = 1
+StrokeContenedor.Parent = ContenedorAutoCarry
+
+-- Texto "Auto Carry Spd" (más grande)
+local LabelAutoCarry = Instance.new("TextLabel")
+LabelAutoCarry.Name = "LabelAutoCarry"
+LabelAutoCarry.Size = UDim2.new(1, -70, 1, 0)
+LabelAutoCarry.Position = UDim2.new(0, 10, 0, 0)
+LabelAutoCarry.BackgroundTransparency = 1
+LabelAutoCarry.Text = "Auto Carry Spd"
+LabelAutoCarry.TextColor3 = Color3.fromRGB(255, 255, 255)
+LabelAutoCarry.Font = Enum.Font.GothamBold
+LabelAutoCarry.TextSize = 15
+LabelAutoCarry.TextXAlignment = Enum.TextXAlignment.Left
+LabelAutoCarry.TextYAlignment = Enum.TextYAlignment.Center
+LabelAutoCarry.Parent = ContenedorAutoCarry
+
+-- Botón switch redondeado (con bolita blanca)
+local SwitchAutoCarry = Instance.new("TextButton")
+SwitchAutoCarry.Name = "SwitchAutoCarry"
+SwitchAutoCarry.Size = UDim2.fromOffset(50, 26)
+SwitchAutoCarry.Position = UDim2.new(1, -10, 0.5, 0)
+SwitchAutoCarry.AnchorPoint = Vector2.new(1, 0.5)
+SwitchAutoCarry.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+SwitchAutoCarry.BorderSizePixel = 0
+SwitchAutoCarry.Text = ""
+SwitchAutoCarry.AutoButtonColor = false
+SwitchAutoCarry.Parent = ContenedorAutoCarry
+
+local CornerSwitch = Instance.new("UICorner")
+CornerSwitch.CornerRadius = UDim.new(0.5, 0)
+CornerSwitch.Parent = SwitchAutoCarry
+
+-- Bolita blanca dentro del switch
+local BolitaSwitch = Instance.new("Frame")
+BolitaSwitch.Name = "BolitaSwitch"
+BolitaSwitch.Size = UDim2.fromOffset(20, 20)
+BolitaSwitch.Position = UDim2.new(0, 3, 0.5, 0)
+BolitaSwitch.AnchorPoint = Vector2.new(0, 0.5)
+BolitaSwitch.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+BolitaSwitch.BorderSizePixel = 0
+BolitaSwitch.Parent = SwitchAutoCarry
+
+local CornerBolita = Instance.new("UICorner")
+CornerBolita.CornerRadius = UDim.new(0.5, 0)
+CornerBolita.Parent = BolitaSwitch
+
+-- Estado del switch
+local autoCarryActivo = false
+
+-- Posiciones de la bolita
+local BOLITA_IZQ = UDim2.new(0, 3, 0.5, 0)   -- apagado (izquierda)
+local BOLITA_DER = UDim2.new(1, -23, 0.5, 0) -- prendido (derecha)
+
+SwitchAutoCarry.Activated:Connect(function()
+	autoCarryActivo = not autoCarryActivo
+	if autoCarryActivo then
+		-- Prendido: bolita a la derecha, switch verde
+		TweenService:Create(
+			BolitaSwitch,
+			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{Position = BOLITA_DER}
+		):Play()
+		TweenService:Create(
+			SwitchAutoCarry,
+			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{BackgroundColor3 = Color3.fromRGB(0, 200, 80)}
+		):Play()
+	else
+		-- Apagado: bolita a la izquierda, switch gris
+		TweenService:Create(
+			BolitaSwitch,
+			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{Position = BOLITA_IZQ}
+		):Play()
+		TweenService:Create(
+			SwitchAutoCarry,
+			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+		):Play()
+	end
+end)
+
+-- ============================================================
+-- ANIMACIÓN DEL PANEL
+-- ============================================================
+
 local POS_OCULTO = UDim2.new(1.5, 0, 0.5, 0)
 local POS_CENTRO = UDim2.new(0.5, 0, 0.5, 0)
 
