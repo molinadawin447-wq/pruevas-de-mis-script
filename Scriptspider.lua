@@ -725,7 +725,7 @@ CornerBotonDecorativo.CornerRadius = UDim.new(0, 10)
 CornerBotonDecorativo.Parent = BotonDecorativo
 
 -- ============================================================
--- PANEL BRAXIL HUB - Escondido a la derecha, aparece centrado
+-- PANEL BRAXIL HUB
 -- ============================================================
 
 local PanelAdapt = Instance.new("Frame")
@@ -782,40 +782,106 @@ CornerBotonX.CornerRadius = UDim.new(0, 8)
 CornerBotonX.Parent = BotonCerrarX
 
 -- ============================================================
--- SECCIÓN MOVEMENT (pegada al lado izquierdo del panel)
+-- PESTAÑAS: MOVEMENT y COMBAT
 -- ============================================================
 
--- Título "MOVEMENT" (pequeño)
-local LabelMovement = Instance.new("TextLabel")
-LabelMovement.Name = "LabelMovement"
-LabelMovement.Size = UDim2.new(1, -30, 0, 18)
-LabelMovement.Position = UDim2.new(0, 15, 0, 55)
-LabelMovement.BackgroundTransparency = 1
-LabelMovement.Text = "MOVEMENT"
-LabelMovement.TextColor3 = Color3.fromRGB(200, 200, 200)
-LabelMovement.Font = Enum.Font.GothamBold
-LabelMovement.TextSize = 12
-LabelMovement.TextXAlignment = Enum.TextXAlignment.Left
-LabelMovement.Parent = PanelAdapt
+-- Colores para estados
+local COLOR_ACTIVO_TEXTO = Color3.fromRGB(255, 255, 255)
+local COLOR_ACTIVO_BORDE = Color3.fromRGB(255, 255, 255)
+local COLOR_INACTIVO_TEXTO = Color3.fromRGB(120, 120, 120)
+local COLOR_INACTIVO_BORDE = Color3.fromRGB(70, 70, 70)
 
--- Subtítulo "Auto Speed" (pequeño)
+-- Pestaña MOVEMENT
+local TabMovement = Instance.new("TextButton")
+TabMovement.Name = "TabMovement"
+TabMovement.Size = UDim2.fromOffset(110, 30)
+TabMovement.Position = UDim2.new(0, 15, 0, 55)
+TabMovement.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+TabMovement.BorderSizePixel = 0
+TabMovement.Text = "MOVEMENT"
+TabMovement.TextColor3 = COLOR_ACTIVO_TEXTO
+TabMovement.Font = Enum.Font.GothamBold
+TabMovement.TextSize = 12
+TabMovement.AutoButtonColor = false
+TabMovement.Parent = PanelAdapt
+
+local CornerTabMovement = Instance.new("UICorner")
+CornerTabMovement.CornerRadius = UDim.new(0, 6)
+CornerTabMovement.Parent = TabMovement
+
+local StrokeTabMovement = Instance.new("UIStroke")
+StrokeTabMovement.Color = COLOR_ACTIVO_BORDE
+StrokeTabMovement.Thickness = 1.5
+StrokeTabMovement.Parent = TabMovement
+
+-- Pestaña COMBAT
+local TabCombat = Instance.new("TextButton")
+TabCombat.Name = "TabCombat"
+TabCombat.Size = UDim2.fromOffset(110, 30)
+TabCombat.Position = UDim2.new(0, 135, 0, 55)
+TabCombat.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+TabCombat.BorderSizePixel = 0
+TabCombat.Text = "COMBAT"
+TabCombat.TextColor3 = COLOR_INACTIVO_TEXTO
+TabCombat.Font = Enum.Font.GothamBold
+TabCombat.TextSize = 12
+TabCombat.AutoButtonColor = false
+TabCombat.Parent = PanelAdapt
+
+local CornerTabCombat = Instance.new("UICorner")
+CornerTabCombat.CornerRadius = UDim.new(0, 6)
+CornerTabCombat.Parent = TabCombat
+
+local StrokeTabCombat = Instance.new("UIStroke")
+StrokeTabCombat.Color = COLOR_INACTIVO_BORDE
+StrokeTabCombat.Thickness = 1.5
+StrokeTabCombat.Parent = TabCombat
+
+-- Función para actualizar el estado visual de las pestañas
+local function setTabActiva(tab)
+	if tab == "movement" then
+		TabMovement.TextColor3 = COLOR_ACTIVO_TEXTO
+		StrokeTabMovement.Color = COLOR_ACTIVO_BORDE
+		TabCombat.TextColor3 = COLOR_INACTIVO_TEXTO
+		StrokeTabCombat.Color = COLOR_INACTIVO_BORDE
+	elseif tab == "combat" then
+		TabCombat.TextColor3 = COLOR_ACTIVO_TEXTO
+		StrokeTabCombat.Color = COLOR_ACTIVO_BORDE
+		TabMovement.TextColor3 = COLOR_INACTIVO_TEXTO
+		StrokeTabMovement.Color = COLOR_INACTIVO_BORDE
+	end
+end
+
+TabMovement.Activated:Connect(function()
+	setTabActiva("movement")
+end)
+
+TabCombat.Activated:Connect(function()
+	setTabActiva("combat")
+end)
+
+-- ============================================================
+-- CONTENIDO DE LA PESTAÑA MOVEMENT
+-- ============================================================
+
+-- Título "Auto Speed" (más grande)
 local LabelAutoSpeed = Instance.new("TextLabel")
 LabelAutoSpeed.Name = "LabelAutoSpeed"
-LabelAutoSpeed.Size = UDim2.new(1, -30, 0, 16)
-LabelAutoSpeed.Position = UDim2.new(0, 15, 0, 75)
+LabelAutoSpeed.Size = UDim2.new(1, -30, 0, 20)
+LabelAutoSpeed.Position = UDim2.new(0, 15, 0, 95)
 LabelAutoSpeed.BackgroundTransparency = 1
 LabelAutoSpeed.Text = "Auto Speed"
-LabelAutoSpeed.TextColor3 = Color3.fromRGB(160, 160, 160)
-LabelAutoSpeed.Font = Enum.Font.Gotham
-LabelAutoSpeed.TextSize = 11
+LabelAutoSpeed.TextColor3 = Color3.fromRGB(220, 220, 220)
+LabelAutoSpeed.Font = Enum.Font.GothamBold
+LabelAutoSpeed.TextSize = 15
 LabelAutoSpeed.TextXAlignment = Enum.TextXAlignment.Left
 LabelAutoSpeed.Parent = PanelAdapt
 
--- Texto grande "Auto Carry Spd" + switch al lado derecho
+-- Contenedor con texto "Auto Carry Spd" + switch
 local ContenedorAutoCarry = Instance.new("Frame")
 ContenedorAutoCarry.Name = "ContenedorAutoCarry"
 ContenedorAutoCarry.Size = UDim2.new(1, -30, 0, 40)
-ContenedorAutoCarry.Position = UDim2.new(0, 15, 0, 95)
+ContenedorAutoCarry.Position = UDim2.new(0, 15, 0, 120)
 ContenedorAutoCarry.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 ContenedorAutoCarry.BorderSizePixel = 0
 ContenedorAutoCarry.Parent = PanelAdapt
@@ -829,7 +895,7 @@ StrokeContenedor.Color = Color3.fromRGB(50, 50, 50)
 StrokeContenedor.Thickness = 1
 StrokeContenedor.Parent = ContenedorAutoCarry
 
--- Texto "Auto Carry Spd" (más grande)
+-- Texto "Auto Carry Spd"
 local LabelAutoCarry = Instance.new("TextLabel")
 LabelAutoCarry.Name = "LabelAutoCarry"
 LabelAutoCarry.Size = UDim2.new(1, -70, 1, 0)
@@ -843,7 +909,7 @@ LabelAutoCarry.TextXAlignment = Enum.TextXAlignment.Left
 LabelAutoCarry.TextYAlignment = Enum.TextYAlignment.Center
 LabelAutoCarry.Parent = ContenedorAutoCarry
 
--- Botón switch redondeado (con bolita blanca)
+-- Switch redondeado con bolita blanca
 local SwitchAutoCarry = Instance.new("TextButton")
 SwitchAutoCarry.Name = "SwitchAutoCarry"
 SwitchAutoCarry.Size = UDim2.fromOffset(50, 26)
@@ -883,7 +949,7 @@ local BOLITA_DER = UDim2.new(1, -23, 0.5, 0) -- prendido (derecha)
 SwitchAutoCarry.Activated:Connect(function()
 	autoCarryActivo = not autoCarryActivo
 	if autoCarryActivo then
-		-- Prendido: bolita a la derecha, switch verde
+		-- Prendido: bolita a la derecha, switch BLANCO, bolita negra
 		TweenService:Create(
 			BolitaSwitch,
 			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -892,10 +958,15 @@ SwitchAutoCarry.Activated:Connect(function()
 		TweenService:Create(
 			SwitchAutoCarry,
 			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{BackgroundColor3 = Color3.fromRGB(0, 200, 80)}
+			{BackgroundColor3 = Color3.fromRGB(255, 255, 255)}
+		):Play()
+		TweenService:Create(
+			BolitaSwitch,
+			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{BackgroundColor3 = Color3.fromRGB(0, 0, 0)}
 		):Play()
 	else
-		-- Apagado: bolita a la izquierda, switch gris
+		-- Apagado: bolita a la izquierda, switch gris, bolita blanca
 		TweenService:Create(
 			BolitaSwitch,
 			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -905,6 +976,11 @@ SwitchAutoCarry.Activated:Connect(function()
 			SwitchAutoCarry,
 			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 			{BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+		):Play()
+		TweenService:Create(
+			BolitaSwitch,
+			TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{BackgroundColor3 = Color3.fromRGB(255, 255, 255)}
 		):Play()
 	end
 end)
