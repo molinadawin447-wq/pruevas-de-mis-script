@@ -705,108 +705,27 @@ for Column = 1, 4 do
 end
 
 -- ============================================================
--- BOTÓN EXTRA IZQUIERDO + PANEL DESLIZANTE
--- Tamaño ajustado al marco blanco de la imagen
+-- BOTÓN DECORATIVO (estilo VANTA VS) - SIN TEXTO Y SIN FUNCIÓN
 -- ============================================================
 
--- Tamaño del marco dibujado en la imagen (~100x80 proporcional a la pantalla)
-local ANCHO_BOTON = 105
-local ALTO_BOTON = 85
-local ANCHO_PANEL = 130   -- Más ancho (antes 105)
-local ALTO_PANEL = 110    -- Más alto (antes 85)
+local BotonDecorativo = Instance.new("TextButton")
+BotonDecorativo.Name = "BotonDecorativo"
+BotonDecorativo.Size = UDim2.fromOffset(120, 45)
+BotonDecorativo.Position = UDim2.new(0, 12, 0.5, -60)
+BotonDecorativo.AnchorPoint = Vector2.new(0, 0.5)
+BotonDecorativo.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BotonDecorativo.BackgroundTransparency = 0.15
+BotonDecorativo.BorderSizePixel = 0
+BotonDecorativo.Text = ""
+BotonDecorativo.AutoButtonColor = false
+BotonDecorativo.Parent = ScreenGui
 
-local BotonExtra = Instance.new("TextButton")
-BotonExtra.Name = "BotonExtra"
-BotonExtra.Size = UDim2.fromOffset(ANCHO_BOTON, ALTO_BOTON)
-BotonExtra.Position = UDim2.new(0, 8, 0.5, -60)
-BotonExtra.AnchorPoint = Vector2.new(0, 0.5)
-BotonExtra.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-BotonExtra.BorderSizePixel = 0
-BotonExtra.Text = ""
-BotonExtra.AutoButtonColor = true
-BotonExtra.Parent = ScreenGui
+local CornerBotonDecorativo = Instance.new("UICorner")
+CornerBotonDecorativo.CornerRadius = UDim.new(0, 8)
+CornerBotonDecorativo.Parent = BotonDecorativo
 
-local CornerExtra = Instance.new("UICorner")
-CornerExtra.CornerRadius = UDim.new(0, 10)
-CornerExtra.Parent = BotonExtra
-
--- Panel negro oculto inicialmente a la derecha
-local Panel = Instance.new("Frame")
-Panel.Name = "Panel"
-Panel.Size = UDim2.fromOffset(ANCHO_PANEL, ALTO_PANEL)
-Panel.AnchorPoint = Vector2.new(0.5, 0.5)
-Panel.Position = UDim2.new(1.5, 0, 0.5, 0)
-Panel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Panel.BorderSizePixel = 0
-Panel.Visible = true
-Panel.Parent = ScreenGui
-
-local CornerPanel = Instance.new("UICorner")
-CornerPanel.CornerRadius = UDim.new(0, 12)
-CornerPanel.Parent = Panel
-
--- Botón "--" en la esquina superior derecha interna
-local CerrarPanel = Instance.new("TextButton")
-CerrarPanel.Name = "CerrarPanel"
-CerrarPanel.Size = UDim2.fromOffset(26, 22)
-CerrarPanel.Position = UDim2.new(1, -4, 0, 4)
-CerrarPanel.AnchorPoint = Vector2.new(1, 0)
-CerrarPanel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CerrarPanel.BackgroundTransparency = 1
-CerrarPanel.BorderSizePixel = 0
-CerrarPanel.Text = "--"
-CerrarPanel.TextColor3 = Color3.fromRGB(255, 255, 255)
-CerrarPanel.Font = Enum.Font.GothamBold
-CerrarPanel.TextSize = 18
-CerrarPanel.AutoButtonColor = false
-CerrarPanel.Parent = Panel
-
-local POS_OCULTO = UDim2.new(1.5, 0, 0.5, 0)
-local POS_CENTRO = UDim2.new(0.5, 0, 0.5, 0)
-
-local panelVisible = false
-local animando = false
-
-BotonExtra.Activated:Connect(function()
-	if animando then return end
-	animando = true
-	if panelVisible then
-		local tweenOut = TweenService:Create(
-			Panel,
-			TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-			{Position = POS_OCULTO}
-		)
-		tweenOut:Play()
-		tweenOut.Completed:Connect(function()
-			panelVisible = false
-			animando = false
-		end)
-	else
-		Panel.Position = POS_OCULTO
-		local tweenIn = TweenService:Create(
-			Panel,
-			TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-			{Position = POS_CENTRO}
-		)
-		tweenIn:Play()
-		tweenIn.Completed:Connect(function()
-			panelVisible = true
-			animando = false
-		end)
-	end
-end)
-
-CerrarPanel.Activated:Connect(function()
-	if animando then return end
-	animando = true
-	local tweenOut = TweenService:Create(
-		Panel,
-		TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-		{Position = POS_OCULTO}
-	)
-	tweenOut:Play()
-	tweenOut.Completed:Connect(function()
-		panelVisible = false
-		animando = false
-	end)
-end)
+local StrokeBotonDecorativo = Instance.new("UIStroke")
+StrokeBotonDecorativo.Color = Color3.fromRGB(255, 255, 255)
+StrokeBotonDecorativo.Thickness = 1.5
+StrokeBotonDecorativo.Transparency = 0.3
+StrokeBotonDecorativo.Parent = BotonDecorativo
