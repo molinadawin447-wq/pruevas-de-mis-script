@@ -725,17 +725,18 @@ CornerBotonDecorativo.CornerRadius = UDim.new(0, 10)
 CornerBotonDecorativo.Parent = BotonDecorativo
 
 -- ============================================================
--- PANEL BRAXIL HUB (estilo ACE DUELS)
+-- PANEL BRAXIL HUB (estilo ACE DUELS) CON SCROLL
 -- ============================================================
 
 local PanelAdapt = Instance.new("Frame")
 PanelAdapt.Name = "PanelAdapt"
-PanelAdapt.Size = UDim2.new(0, 300, 1, -40)
+PanelAdapt.Size = UDim2.new(0, 320, 1, -40)
 PanelAdapt.AnchorPoint = Vector2.new(0.5, 0.5)
 PanelAdapt.Position = UDim2.new(1.5, 0, 0.5, 0)
 PanelAdapt.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 PanelAdapt.BorderSizePixel = 0
 PanelAdapt.Visible = true
+PanelAdapt.ClipsDescendants = true
 PanelAdapt.Parent = ScreenGui
 
 local CornerPanelAdapt = Instance.new("UICorner")
@@ -748,10 +749,9 @@ StrokePanelAdapt.Thickness = 1.5
 StrokePanelAdapt.Parent = PanelAdapt
 
 -- ============================================================
--- HEADER DEL PANEL (logo + título + subtítulo + LOCK + X)
+-- HEADER: logo + título + subtítulo + LOCK + X
 -- ============================================================
 
--- Logo (círculo con símbolo)
 local LogoFrame = Instance.new("Frame")
 LogoFrame.Size = UDim2.fromOffset(44, 44)
 LogoFrame.Position = UDim2.new(0, 12, 0, 14)
@@ -777,10 +777,9 @@ LogoText.Font = Enum.Font.GothamBold
 LogoText.TextSize = 26
 LogoText.Parent = LogoFrame
 
--- Título "BRAXIL HUB"
 local TituloPanel = Instance.new("TextLabel")
 TituloPanel.Name = "TituloPanel"
-TituloPanel.Size = UDim2.new(0, 140, 0, 24)
+TituloPanel.Size = UDim2.new(0, 150, 0, 24)
 TituloPanel.Position = UDim2.new(0, 64, 0, 16)
 TituloPanel.BackgroundTransparency = 1
 TituloPanel.Text = "BRAXIL HUB"
@@ -790,10 +789,9 @@ TituloPanel.TextSize = 17
 TituloPanel.TextXAlignment = Enum.TextXAlignment.Left
 TituloPanel.Parent = PanelAdapt
 
--- Subtítulo
 local SubtituloPanel = Instance.new("TextLabel")
 SubtituloPanel.Name = "SubtituloPanel"
-SubtituloPanel.Size = UDim2.new(0, 140, 0, 14)
+SubtituloPanel.Size = UDim2.new(0, 150, 0, 14)
 SubtituloPanel.Position = UDim2.new(0, 64, 0, 40)
 SubtituloPanel.BackgroundTransparency = 1
 SubtituloPanel.Text = "t.me/kurtis_scripts"
@@ -803,7 +801,6 @@ SubtituloPanel.TextSize = 10
 SubtituloPanel.TextXAlignment = Enum.TextXAlignment.Left
 SubtituloPanel.Parent = PanelAdapt
 
--- Botón LOCK
 local LockBtn = Instance.new("TextButton")
 LockBtn.Name = "LockBtn"
 LockBtn.Size = UDim2.fromOffset(42, 22)
@@ -826,7 +823,6 @@ StrokeLock.Color = Color3.fromRGB(60, 60, 60)
 StrokeLock.Thickness = 1
 StrokeLock.Parent = LockBtn
 
--- Botón X (cerrar)
 local BotonCerrarX = Instance.new("TextButton")
 BotonCerrarX.Name = "BotonCerrarX"
 BotonCerrarX.Size = UDim2.fromOffset(22, 22)
@@ -851,42 +847,54 @@ StrokeX.Parent = BotonCerrarX
 
 -- ============================================================
 -- PESTAÑAS: MOVEMENT, COMBAT, KEYBINDS, VISUALS, SETTINGS
+-- Cada pestaña tiene su propio espacio, NO se montan
 -- ============================================================
 
 local COLOR_ACTIVO_TEXTO = Color3.fromRGB(255, 255, 255)
 local COLOR_ACTIVO_BORDE = Color3.fromRGB(255, 255, 255)
-local COLOR_INACTIVO_TEXTO = Color3.fromRGB(130, 130, 130)
-local COLOR_INACTIVO_BORDE = Color3.fromRGB(50, 50, 50)
+local COLOR_INACTIVO_TEXTO = Color3.fromRGB(120, 120, 120)
+local COLOR_INACTIVO_BORDE = Color3.fromRGB(45, 45, 45)
 
 local TabsContainer = Instance.new("Frame")
 TabsContainer.Name = "TabsContainer"
-TabsContainer.Size = UDim2.new(1, -20, 0, 28)
-TabsContainer.Position = UDim2.new(0, 10, 0, 70)
+TabsContainer.Size = UDim2.new(1, -20, 0, 30)
+TabsContainer.Position = UDim2.new(0, 10, 0, 68)
 TabsContainer.BackgroundTransparency = 1
 TabsContainer.Parent = PanelAdapt
 
 local TabNames = {"MOVEMENT", "COMBAT", "KEYBINDS", "VISUALS", "SETTINGS"}
 local Tabs = {}
 local TabStrokes = {}
-local tabW = 1 / #TabNames
+
+-- Ancho disponible: 300px (ancho del panel - 20 padding)
+-- 5 pestañas -> cada una 60px aprox con separación de 3px
+local TabAncho = 60
+local TabGap = 3
 
 for i, name in ipairs(TabNames) do
 	local tab = Instance.new("TextButton")
 	tab.Name = "Tab_" .. name
-	tab.Size = UDim2.new(tabW, -3, 1, 0)
-	tab.Position = UDim2.new((i-1) * tabW, 1.5, 0, 0)
-	tab.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	tab.Size = UDim2.fromOffset(TabAncho, 30)
+	tab.Position = UDim2.fromOffset((i-1) * (TabAncho + TabGap), 0)
+	tab.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	tab.BorderSizePixel = 0
 	tab.Text = name
 	tab.TextColor3 = (i == 1) and COLOR_ACTIVO_TEXTO or COLOR_INACTIVO_TEXTO
 	tab.Font = Enum.Font.GothamBold
-	tab.TextSize = 8
+	tab.TextSize = 9
+	tab.TextWrapped = false
+	tab.TextScaled = true   -- se adapta al ancho del tab
 	tab.AutoButtonColor = false
 	tab.Parent = TabsContainer
 
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 6)
 	corner.Parent = tab
+
+	local padding = Instance.new("UIPadding")
+	padding.PaddingLeft = UDim.new(0, 4)
+	padding.PaddingRight = UDim.new(0, 4)
+	padding.Parent = tab
 
 	local stroke = Instance.new("UIStroke")
 	stroke.Color = (i == 1) and COLOR_ACTIVO_BORDE or COLOR_INACTIVO_BORDE
@@ -916,41 +924,60 @@ for i, tab in ipairs(Tabs) do
 end
 
 -- ============================================================
--- CONTENIDO DE LA PESTAÑA MOVEMENT
+-- SCROLLING FRAME (para que se pueda bajar y quepan más funciones)
 -- ============================================================
 
-local ContentFrame = Instance.new("Frame")
-ContentFrame.Name = "ContentFrame"
-ContentFrame.Size = UDim2.new(1, 0, 1, -115)
-ContentFrame.Position = UDim2.new(0, 0, 0, 108)
-ContentFrame.BackgroundTransparency = 1
-ContentFrame.Parent = PanelAdapt
+local ScrollContent = Instance.new("ScrollingFrame")
+ScrollContent.Name = "ScrollContent"
+ScrollContent.Size = UDim2.new(1, -12, 1, -110)
+ScrollContent.Position = UDim2.new(0, 6, 0, 106)
+ScrollContent.BackgroundTransparency = 1
+ScrollContent.BorderSizePixel = 0
+ScrollContent.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollContent.ScrollBarThickness = 4
+ScrollContent.ScrollBarImageColor3 = Color3.fromRGB(120, 120, 120)
+ScrollContent.ScrollBarImageTransparency = 0.3
+ScrollContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
+ScrollContent.ScrollingDirection = Enum.ScrollingDirection.Y
+ScrollContent.Parent = PanelAdapt
 
-local Y = 0
+local ScrollLayout = Instance.new("UIListLayout")
+ScrollLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ScrollLayout.Padding = UDim.new(0, 6)
+ScrollLayout.Parent = ScrollContent
 
--- Helper: etiqueta de sección
-local function makeSectionLabel(text)
+local ScrollPadding = Instance.new("UIPadding")
+ScrollPadding.PaddingTop = UDim.new(0, 4)
+ScrollPadding.PaddingBottom = UDim.new(0, 8)
+ScrollPadding.PaddingLeft = UDim.new(0, 4)
+ScrollPadding.PaddingRight = UDim.new(0, 8)
+ScrollPadding.Parent = ScrollContent
+
+-- ============================================================
+-- CONTENIDO DEL APARTADO MOVEMENT (con scroll)
+-- ============================================================
+
+local CONTENT_WIDTH = 300 - 12 - 12  -- ancho del scroll interior
+
+local function makeSectionLabel(texto)
 	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, -20, 0, 16)
-	label.Position = UDim2.new(0, 10, 0, Y)
+	label.Size = UDim2.new(1, 0, 0, 16)
 	label.BackgroundTransparency = 1
-	label.Text = text
+	label.Text = texto
 	label.TextColor3 = Color3.fromRGB(255, 255, 255)
 	label.Font = Enum.Font.GothamBold
 	label.TextSize = 11
 	label.TextXAlignment = Enum.TextXAlignment.Left
-	label.Parent = ContentFrame
-	Y = Y + 20
+	label.Parent = ScrollContent
+	return label
 end
 
--- Helper: fila con texto izquierdo y caja de valor derecha
 local function makeRow(textoIzq, valorDer)
 	local fila = Instance.new("Frame")
-	fila.Size = UDim2.new(1, -20, 0, 36)
-	fila.Position = UDim2.new(0, 10, 0, Y)
+	fila.Size = UDim2.new(1, 0, 0, 36)
 	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	fila.BorderSizePixel = 0
-	fila.Parent = ContentFrame
+	fila.Parent = ScrollContent
 
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 8)
@@ -998,18 +1025,15 @@ local function makeRow(textoIzq, valorDer)
 	valorLabel.TextSize = 12
 	valorLabel.Parent = cajaValor
 
-	Y = Y + 42
 	return fila
 end
 
--- Helper: fila con switch (Auto Carry Speed)
 local function makeRowSwitch()
 	local fila = Instance.new("Frame")
-	fila.Size = UDim2.new(1, -20, 0, 42)
-	fila.Position = UDim2.new(0, 10, 0, Y)
+	fila.Size = UDim2.new(1, 0, 0, 42)
 	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	fila.BorderSizePixel = 0
-	fila.Parent = ContentFrame
+	fila.Parent = ScrollContent
 
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 8)
@@ -1032,7 +1056,6 @@ local function makeRowSwitch()
 	label.Parent = fila
 
 	local Switch = Instance.new("TextButton")
-	Switch.Name = "SwitchAutoCarry"
 	Switch.Size = UDim2.fromOffset(50, 26)
 	Switch.Position = UDim2.new(1, -10, 0.5, 0)
 	Switch.AnchorPoint = Vector2.new(1, 0.5)
@@ -1047,7 +1070,6 @@ local function makeRowSwitch()
 	cornerSwitch.Parent = Switch
 
 	local Bolita = Instance.new("Frame")
-	Bolita.Name = "BolitaSwitch"
 	Bolita.Size = UDim2.fromOffset(20, 20)
 	Bolita.Position = UDim2.new(0, 3, 0.5, 0)
 	Bolita.AnchorPoint = Vector2.new(0, 0.5)
@@ -1073,36 +1095,28 @@ local function makeRowSwitch()
 		end
 	end)
 
-	Y = Y + 48
 	return fila
 end
 
--- ============ CONSTRUIR CONTENIDO MOVEMENT ============
+-- ===== CONSTRUIR CONTENIDO MOVEMENT =====
 
--- AUTO SPEED
 makeSectionLabel("AUTO SPEED")
 makeRowSwitch()
 
-Y = Y + 4
-
--- NORMAL SPEED
 makeSectionLabel("NORMAL SPEED")
 makeRow("Normal Speed", "63")
 makeRow("Carry Speed", "30")
 makeRow("Mode", "Normal")
 
-Y = Y + 4
-
--- LAGGER SPEED
 makeSectionLabel("LAGGER SPEED")
 makeRow("Lagger Speed", "35")
 makeRow("Lagger Carry Speed", "20")
 makeRow("Mode", "Lagger")
 
-Y = Y + 4
-
--- TELEPORT
 makeSectionLabel("TELEPORT")
+makeRow("TP Down", "Key: X")
+makeRow("TP Bat", "Key: Z")
+makeRow("TP Player", "Key: C")
 
 -- ============================================================
 -- ANIMACIÓN DEL PANEL
