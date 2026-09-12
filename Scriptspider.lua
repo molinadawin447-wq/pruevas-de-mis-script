@@ -1,10 +1,5 @@
 -- LocalScript
 -- Distribución: 1 + 2 + 3 + 4 = 10 botones en total
---
--- Columna 1 (X=0)   : BAT BYPASS
--- Columna 2 (X=67)  : ANTI DESYNC / RESET
--- Columna 3 (X=134) : DROP BR / BAT AIMBOT / TP DOWN
--- Columna 4 (X=201) : AUTO LEFT / AUTO RIGHT / CARRY SPD / LAGGER OFF-ON
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -24,7 +19,7 @@ M.autoSwingEnabled = true
 M.aimbotSpeed = 58
 
 -- ============================================================
--- INSTANT RESET (AXONIC HUB v2.0)
+-- INSTANT RESET
 -- ============================================================
 
 local cursedResetRemote = nil
@@ -127,7 +122,7 @@ local function performInstantReset()
 end
 
 -- ============================================================
--- BAT AIMBOT (funciones del módulo M)
+-- BAT AIMBOT
 -- ============================================================
 
 function M.findBatForAimbot()
@@ -192,10 +187,6 @@ function M.startBatAimbot()
 	end
 
 	M.autoBatEnabled = true
-	if M.autoTPEnabled then
-		if M.autoTPConn then task.cancel(M.autoTPConn); M.autoTPConn = nil end
-		if M.setAutoTPVisual then M.setAutoTPVisual(true) end
-	end
 
 	local hum0 = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 	if hum0 then hum0.AutoRotate = false end
@@ -259,9 +250,6 @@ function M.startBatAimbot()
 
 		M.swingCurrentBatAimbot(char)
 	end)
-
-	if M.autoBatSetVisual then M.autoBatSetVisual(true) end
-	if M.mobBtnRefs.autoBat then M.mobBtnRefs.autoBat(true) end
 end
 
 function M.stopBatAimbot()
@@ -280,21 +268,16 @@ function M.stopBatAimbot()
 	end
 	local hum2 = char and char:FindFirstChildOfClass("Humanoid")
 	if hum2 then hum2.AutoRotate = true end
-
-	if M.autoTPEnabled then M.startAutoTP() end
-	if M.autoBatSetVisual then M.autoBatSetVisual(false) end
-	if M.mobBtnRefs.autoBat then M.mobBtnRefs.autoBat(false) end
 end
 
 function M.queueAutoBatStart()
-	if M.antiKickEnabled and M.brainrotDetected then return end
-	if M.autoLeftEnabled then M.autoLeftEnabled=false; if M.autoLeftSetVisual then M.autoLeftSetVisual(false) end; M.stopAutoLeft() end
-	if M.autoRightEnabled then M.autoRightEnabled=false; if M.autoRightSetVisual then M.autoRightSetVisual(false) end; M.stopAutoRight() end
+	if M.autoLeftEnabled then M.autoLeftEnabled=false; M.stopAutoLeft() end
+	if M.autoRightEnabled then M.autoRightEnabled=false; M.stopAutoRight() end
 	M.startBatAimbot()
 end
 
 -- ============================================================
--- AUTO LEFT & AUTO RIGHT (CRYON BLUE EDITION)
+-- AUTO LEFT & AUTO RIGHT
 -- ============================================================
 
 local AP = {
@@ -315,12 +298,6 @@ local arConn = nil
 
 local normalSpeed = 60
 
-function setNormalSpeed(speed)
-	if type(speed) == "number" and speed > 0 then
-		normalSpeed = speed
-	end
-end
-
 function startAutoLeft(speed)
 	if alConn then stopAutoLeft() end
 	autoLeftEnabled = true
@@ -340,11 +317,6 @@ function startAutoLeft(speed)
 			local dist = (target - hrp.Position).Magnitude
 			if dist < 1 then
 				alPhase = 2
-				local dir = (AP.L2 - hrp.Position)
-				local move = Vector3.new(dir.X, 0, dir.Z).Unit
-				hum:Move(move, false)
-				hrp.AssemblyLinearVelocity = Vector3.new(move.X * spd, hrp.AssemblyLinearVelocity.Y, move.Z * spd)
-				return
 			end
 			local dir = (AP.L1 - hrp.Position)
 			local move = Vector3.new(dir.X, 0, dir.Z).Unit
@@ -360,9 +332,6 @@ function startAutoLeft(speed)
 				autoLeftEnabled = false
 				if alConn then alConn:Disconnect(); alConn = nil end
 				alPhase = 1
-				if (AP.L_FACE - hrp.Position).Magnitude > 0.01 then
-					hrp.CFrame = CFrame.new(hrp.Position, Vector3.new(AP.L_FACE.X, hrp.Position.Y, AP.L_FACE.Z))
-				end
 				return
 			end
 			local dir = (AP.L2 - hrp.Position)
@@ -371,7 +340,6 @@ function startAutoLeft(speed)
 			hrp.AssemblyLinearVelocity = Vector3.new(move.X * spd, hrp.AssemblyLinearVelocity.Y, move.Z * spd)
 		end
 	end)
-	print("Auto Left activado")
 end
 
 function stopAutoLeft()
@@ -383,7 +351,6 @@ function stopAutoLeft()
 		local hum = char:FindFirstChildOfClass("Humanoid")
 		if hum then hum:Move(Vector3.zero, false) end
 	end
-	print("Auto Left desactivado")
 end
 
 function startAutoRight(speed)
@@ -405,11 +372,6 @@ function startAutoRight(speed)
 			local dist = (target - hrp.Position).Magnitude
 			if dist < 1 then
 				arPhase = 2
-				local dir = (AP.R2 - hrp.Position)
-				local move = Vector3.new(dir.X, 0, dir.Z).Unit
-				hum:Move(move, false)
-				hrp.AssemblyLinearVelocity = Vector3.new(move.X * spd, hrp.AssemblyLinearVelocity.Y, move.Z * spd)
-				return
 			end
 			local dir = (AP.R1 - hrp.Position)
 			local move = Vector3.new(dir.X, 0, dir.Z).Unit
@@ -425,9 +387,6 @@ function startAutoRight(speed)
 				autoRightEnabled = false
 				if arConn then arConn:Disconnect(); arConn = nil end
 				arPhase = 1
-				if (AP.R_FACE - hrp.Position).Magnitude > 0.01 then
-					hrp.CFrame = CFrame.new(hrp.Position, Vector3.new(AP.R_FACE.X, hrp.Position.Y, AP.R_FACE.Z))
-				end
 				return
 			end
 			local dir = (AP.R2 - hrp.Position)
@@ -436,7 +395,6 @@ function startAutoRight(speed)
 			hrp.AssemblyLinearVelocity = Vector3.new(move.X * spd, hrp.AssemblyLinearVelocity.Y, move.Z * spd)
 		end
 	end)
-	print("Auto Right activado")
 end
 
 function stopAutoRight()
@@ -448,18 +406,16 @@ function stopAutoRight()
 		local hum = char:FindFirstChildOfClass("Humanoid")
 		if hum then hum:Move(Vector3.zero, false) end
 	end
-	print("Auto Right desactivado")
 end
 
 -- ============================================================
--- TP BAT FUNCTION (CRYON BLUE EDITION)
+-- TP BAT
 -- ============================================================
 
 local tpBatEnabled = false
 local tpBatHittingCooldown = false
 local tpBatHRP = nil
 local tpBatH = nil
-
 local heartbeatConn = nil
 local renderConn = nil
 local charAddedConn = nil
@@ -483,24 +439,14 @@ end
 local function tryHit()
 	if tpBatHittingCooldown then return end
 	tpBatHittingCooldown = true
-
 	pcall(function()
 		local bat = getBatTool()
 		if bat then
 			bat:Activate()
 			local remoteEvent = bat:FindFirstChildWhichIsA("RemoteEvent")
-			if remoteEvent then
-				remoteEvent:FireServer()
-			end
-			local remoteFunction = bat:FindFirstChildWhichIsA("RemoteFunction")
-			if remoteFunction then
-				pcall(function()
-					remoteFunction:InvokeServer()
-				end)
-			end
+			if remoteEvent then remoteEvent:FireServer() end
 		end
 	end)
-
 	task.delay(0.08, function()
 		tpBatHittingCooldown = false
 	end)
@@ -538,27 +484,14 @@ local function heartbeatLoop()
 		updateCharacterReferences()
 		if not tpBatH or not tpBatHRP then return end
 	end
-
-	local target, dist = getClosestPlayer()
+	local target = getClosestPlayer()
 	if target and target.Character then
 		local targetRoot = target.Character:FindFirstChild("HumanoidRootPart")
 		if targetRoot then
-			if sethiddenproperty then
-				pcall(function()
-					sethiddenproperty(tpBatHRP, "PhysicsRepRootPart", targetRoot)
-				end)
-			end
-
 			local targetPosition = targetRoot.Position + Vector3.new(0, 0.9, 0)
 			if (tpBatHRP.Position - targetPosition).Magnitude > 5 then
 				tpBatHRP.CFrame = CFrame.new(targetPosition)
 			end
-
-			local camera = workspace.CurrentCamera
-			if camera then
-				camera.CFrame = CFrame.new(camera.CFrame.Position, targetRoot.Position)
-			end
-
 			tryHit()
 		end
 	end
@@ -570,8 +503,7 @@ local function renderLoop()
 		updateCharacterReferences()
 		if not tpBatH or not tpBatHRP then return end
 	end
-
-	local target, dist = getClosestPlayer()
+	local target = getClosestPlayer()
 	if target and target.Character then
 		local targetRoot = target.Character:FindFirstChild("HumanoidRootPart")
 		if targetRoot then
@@ -588,42 +520,27 @@ function enableTPBat()
 	if tpBatEnabled then return end
 	tpBatEnabled = true
 	updateCharacterReferences()
-
 	if heartbeatConn then heartbeatConn:Disconnect() end
 	if renderConn then renderConn:Disconnect() end
-
 	heartbeatConn = RunService.Heartbeat:Connect(heartbeatLoop)
 	renderConn = RunService.RenderStepped:Connect(renderLoop)
-
 	if charAddedConn then charAddedConn:Disconnect() end
 	charAddedConn = LP.CharacterAdded:Connect(function()
 		task.wait(0.2)
 		updateCharacterReferences()
 	end)
-
-	print("TP Bat activado")
 end
 
 function disableTPBat()
 	if not tpBatEnabled then return end
 	tpBatEnabled = false
-
 	if heartbeatConn then heartbeatConn:Disconnect(); heartbeatConn = nil end
 	if renderConn then renderConn:Disconnect(); renderConn = nil end
 	if charAddedConn then charAddedConn:Disconnect(); charAddedConn = nil end
-
-	pcall(function()
-		local camera = workspace.CurrentCamera
-		if camera then
-			camera.CFrame = CFrame.new(camera.CFrame.Position, Vector3.zero)
-		end
-	end)
-
-	print("TP Bat desactivado")
 end
 
 -- ============================================================
--- FIN TP BAT
+-- UI PRINCIPAL
 -- ============================================================
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -634,7 +551,6 @@ ScreenGui.Parent = PlayerGui
 
 local Main = Instance.new("Frame")
 Main.Name = "Main"
-
 Main.Size = UDim2.fromOffset(268, 245)
 Main.Position = UDim2.new(1, -7, 0, 12)
 Main.AnchorPoint = Vector2.new(1, 0)
@@ -659,7 +575,6 @@ local ColumnData = {
 }
 
 local WHITE_TIME = 1800
-local SHORT_WHITE_TIME = 1
 local FLASH_010_TIME = 0.10
 
 local ButtonLabels = {
@@ -696,7 +611,6 @@ local function ApplyButtonStyle(Button)
 	Button.BorderSizePixel = 0
 	Button.Text = ""
 	Button.AutoButtonColor = true
-
 	local Corner = Instance.new("UICorner")
 	Corner.CornerRadius = UDim.new(0, 10)
 	Corner.Parent = Button
@@ -708,7 +622,6 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 	else
 		Button.Text = Line1 .. "\n" .. Line2
 	end
-
 	Button.TextColor3 = TEXT_COLOR
 	Button.Font = TEXT_FONT
 	Button.TextSize = TEXT_SIZE
@@ -716,15 +629,10 @@ local function ApplyTwoLineText(Button, Line1, Line2)
 	Button.TextXAlignment = Enum.TextXAlignment.Center
 	Button.TextYAlignment = Enum.TextYAlignment.Center
 	Button.TextScaled = false
-
 	local TextStroke = Instance.new("UIStroke")
-	TextStroke.Name = "TextStroke"
 	TextStroke.Color = TEXT_STROKE_COLOR
 	TextStroke.Thickness = TEXT_STROKE_THICKNESS
-	TextStroke.Transparency = 0
-	TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 	TextStroke.Parent = Button
-
 	local TextPadding = Instance.new("UIPadding")
 	TextPadding.PaddingLeft = UDim.new(0, 4)
 	TextPadding.PaddingRight = UDim.new(0, 4)
@@ -740,12 +648,10 @@ for Column = 1, 4 do
 		Button.Name = "Button" .. Column .. "_" .. Number
 		Button.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
 		Button.Position = UDim2.fromOffset(Data.X, (Number - 1) * (ButtonSize + GapY))
-
 		ApplyButtonStyle(Button)
 		Button.Parent = Main
 
 		local Key = Column .. "_" .. Number
-
 		local Label = ButtonLabels[Key]
 		if Label then
 			ApplyTwoLineText(Button, Label[1], Label[2])
@@ -754,78 +660,43 @@ for Column = 1, 4 do
 		if Flash010Buttons[Key] then
 			Button.Activated:Connect(function()
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				if Key == "2_2" then
-					performInstantReset()
-				end
+				if Key == "2_2" then performInstantReset() end
 				task.wait(FLASH_010_TIME)
 				Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 			end)
-
 		elseif LongWhiteButtons[Key] then
 			local Active = false
 			local ActivationId = 0
-
 			Button.Activated:Connect(function()
 				if Active then
 					Active = false
 					ActivationId += 1
 					Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-
-					if Key == "4_4" then
-						Button.Text = "LAGGER\nOFF"
-					end
-
-					if Key == "4_1" then
-						stopAutoLeft()
-					elseif Key == "4_2" then
-						stopAutoRight()
-					elseif Key == "2_1" then
-						disableTPBat()
-					elseif Key == "3_2" then
-						M.stopBatAimbot()
-					end
-
+					if Key == "4_4" then Button.Text = "LAGGER\nOFF" end
+					if Key == "4_1" then stopAutoLeft()
+					elseif Key == "4_2" then stopAutoRight()
+					elseif Key == "2_1" then disableTPBat()
+					elseif Key == "3_2" then M.stopBatAimbot() end
 					return
 				end
-
 				Active = true
 				ActivationId += 1
 				local ThisActivation = ActivationId
-
 				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-				if Key == "4_4" then
-					Button.Text = "LAGGER\nON"
-				end
-
-				if Key == "4_1" then
-					startAutoLeft()
-				elseif Key == "4_2" then
-					startAutoRight()
-				elseif Key == "2_1" then
-					enableTPBat()
-				elseif Key == "3_2" then
-					M.queueAutoBatStart()
-				end
-
+				if Key == "4_4" then Button.Text = "LAGGER\nON" end
+				if Key == "4_1" then startAutoLeft()
+				elseif Key == "4_2" then startAutoRight()
+				elseif Key == "2_1" then enableTPBat()
+				elseif Key == "3_2" then M.queueAutoBatStart() end
 				task.delay(WHITE_TIME, function()
 					if Active and ActivationId == ThisActivation then
 						Active = false
 						Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-
-						if Key == "4_4" then
-							Button.Text = "LAGGER\nOFF"
-						end
-
-						if Key == "4_1" then
-							stopAutoLeft()
-						elseif Key == "4_2" then
-							stopAutoRight()
-						elseif Key == "2_1" then
-							disableTPBat()
-						elseif Key == "3_2" then
-							M.stopBatAimbot()
-						end
+						if Key == "4_4" then Button.Text = "LAGGER\nOFF" end
+						if Key == "4_1" then stopAutoLeft()
+						elseif Key == "4_2" then stopAutoRight()
+						elseif Key == "2_1" then disableTPBat()
+						elseif Key == "3_2" then M.stopBatAimbot() end
 					end
 				end)
 			end)
@@ -835,15 +706,18 @@ end
 
 -- ============================================================
 -- BOTÓN EXTRA IZQUIERDO + PANEL DESLIZANTE
+-- Tamaño ajustado al marco blanco de la imagen
 -- ============================================================
 
--- Tamaño igual al marco dibujado (~120x120)
-local TAMANO_BOTON = 120
-local TAMANO_PANEL = 120
+-- Tamaño del marco dibujado en la imagen (~100x80 proporcional a la pantalla)
+local ANCHO_BOTON = 105
+local ALTO_BOTON = 85
+local ANCHO_PANEL = 105
+local ALTO_PANEL = 85
 
 local BotonExtra = Instance.new("TextButton")
 BotonExtra.Name = "BotonExtra"
-BotonExtra.Size = UDim2.fromOffset(TAMANO_BOTON, TAMANO_BOTON)
+BotonExtra.Size = UDim2.fromOffset(ANCHO_BOTON, ALTO_BOTON)
 BotonExtra.Position = UDim2.new(0, 8, 0.5, -60)
 BotonExtra.AnchorPoint = Vector2.new(0, 0.5)
 BotonExtra.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -856,12 +730,12 @@ local CornerExtra = Instance.new("UICorner")
 CornerExtra.CornerRadius = UDim.new(0, 10)
 CornerExtra.Parent = BotonExtra
 
--- Panel cuadrado negro (oculto inicialmente a la derecha)
+-- Panel negro oculto inicialmente a la derecha
 local Panel = Instance.new("Frame")
 Panel.Name = "Panel"
-Panel.Size = UDim2.fromOffset(TAMANO_PANEL, TAMANO_PANEL)
+Panel.Size = UDim2.fromOffset(ANCHO_PANEL, ALTO_PANEL)
 Panel.AnchorPoint = Vector2.new(0.5, 0.5)
-Panel.Position = UDim2.new(1.5, 0, 0.5, 0) -- fuera de pantalla por la derecha
+Panel.Position = UDim2.new(1.5, 0, 0.5, 0)
 Panel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Panel.BorderSizePixel = 0
 Panel.Visible = true
@@ -871,11 +745,11 @@ local CornerPanel = Instance.new("UICorner")
 CornerPanel.CornerRadius = UDim.new(0, 12)
 CornerPanel.Parent = Panel
 
--- Botón "--" en la esquina superior derecha del panel
+-- Botón "--" en la esquina superior derecha interna
 local CerrarPanel = Instance.new("TextButton")
 CerrarPanel.Name = "CerrarPanel"
-CerrarPanel.Size = UDim2.fromOffset(30, 26)
-CerrarPanel.Position = UDim2.new(1, -6, 0, 6)
+CerrarPanel.Size = UDim2.fromOffset(26, 22)
+CerrarPanel.Position = UDim2.new(1, -4, 0, 4)
 CerrarPanel.AnchorPoint = Vector2.new(1, 0)
 CerrarPanel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 CerrarPanel.BackgroundTransparency = 1
@@ -883,28 +757,20 @@ CerrarPanel.BorderSizePixel = 0
 CerrarPanel.Text = "--"
 CerrarPanel.TextColor3 = Color3.fromRGB(255, 255, 255)
 CerrarPanel.Font = Enum.Font.GothamBold
-CerrarPanel.TextSize = 20
+CerrarPanel.TextSize = 18
 CerrarPanel.AutoButtonColor = false
 CerrarPanel.Parent = Panel
 
-local CornerCerrar = Instance.new("UICorner")
-CornerCerrar.CornerRadius = UDim.new(0, 6)
-CornerCerrar.Parent = CerrarPanel
-
--- Posición oculta (a la derecha) y posición centrada
 local POS_OCULTO = UDim2.new(1.5, 0, 0.5, 0)
 local POS_CENTRO = UDim2.new(0.5, 0, 0.5, 0)
 
 local panelVisible = false
 local animando = false
 
--- Abrir panel (deslizar desde la derecha hasta el centro)
 BotonExtra.Activated:Connect(function()
 	if animando then return end
 	animando = true
-
 	if panelVisible then
-		-- Si ya está visible, lo devolvemos por la derecha
 		local tweenOut = TweenService:Create(
 			Panel,
 			TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
@@ -916,7 +782,6 @@ BotonExtra.Activated:Connect(function()
 			animando = false
 		end)
 	else
-		-- Aparece desde la derecha y se desliza al centro
 		Panel.Position = POS_OCULTO
 		local tweenIn = TweenService:Create(
 			Panel,
@@ -931,11 +796,9 @@ BotonExtra.Activated:Connect(function()
 	end
 end)
 
--- Botón "--" dentro del panel: devuelve el panel por la derecha
 CerrarPanel.Activated:Connect(function()
 	if animando then return end
 	animando = true
-
 	local tweenOut = TweenService:Create(
 		Panel,
 		TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
