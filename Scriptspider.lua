@@ -833,39 +833,25 @@ for Column = 1, 4 do
 end
 
 -- ============================================================
--- BOTÓN ENANO IZQUIERDO (independiente)
+-- BOTÓN EXTRA IZQUIERDO (sin texto, mismo estilo)
 -- ============================================================
 
-local BotonEnano = Instance.new("TextButton")
-BotonEnano.Name = "BotonEnano"
-BotonEnano.Size = UDim2.fromOffset(45, 22)
-BotonEnano.Position = UDim2.new(0, 8, 0.5, -60)
-BotonEnano.AnchorPoint = Vector2.new(0, 0.5)
-BotonEnano.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-BotonEnano.BorderSizePixel = 0
-BotonEnano.Text = ""
-BotonEnano.AutoButtonColor = true
-BotonEnano.Parent = ScreenGui
+local BotonExtra = Instance.new("TextButton")
+BotonExtra.Name = "BotonExtra"
+BotonExtra.Size = UDim2.fromOffset(60, 60)
+BotonExtra.Position = UDim2.new(0, 8, 0.5, -60)
+BotonExtra.AnchorPoint = Vector2.new(0, 0.5)
+BotonExtra.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BotonExtra.BorderSizePixel = 0
+BotonExtra.Text = ""
+BotonExtra.AutoButtonColor = true
+BotonExtra.Parent = ScreenGui
 
-local CornerEnano = Instance.new("UICorner")
-CornerEnano.CornerRadius = UDim.new(1, 0)
-CornerEnano.Parent = BotonEnano
+local CornerExtra = Instance.new("UICorner")
+CornerExtra.CornerRadius = UDim.new(0, 10)
+CornerExtra.Parent = BotonExtra
 
-BotonEnano.Text = "MENU"
-BotonEnano.TextColor3 = Color3.fromRGB(255, 255, 255)
-BotonEnano.Font = Enum.Font.GothamBold
-BotonEnano.TextSize = 11
-BotonEnano.TextWrapped = true
-BotonEnano.TextXAlignment = Enum.TextXAlignment.Center
-BotonEnano.TextYAlignment = Enum.TextYAlignment.Center
-
-local TextStrokeEnano = Instance.new("UIStroke")
-TextStrokeEnano.Color = Color3.fromRGB(0, 0, 0)
-TextStrokeEnano.Thickness = 1
-TextStrokeEnano.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-TextStrokeEnano.Parent = BotonEnano
-
-BotonEnano.Activated:Connect(function()
+BotonExtra.Activated:Connect(function()
 	if Main.Visible then
 		Main.Visible = false
 	else
