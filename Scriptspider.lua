@@ -540,7 +540,7 @@ function disableTPBat()
 end
 
 -- ============================================================
--- UI PRINCIPAL
+-- UI PRINCIPAL (BOTONES FLOTANTES)
 -- ============================================================
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -1030,7 +1030,7 @@ local function makeRow(parent, textoIzq, valorDer)
 	return fila
 end
 
-local function makeRowSwitch(parent)
+local function makeRowSwitch(parent, labelText, callback)
 	local fila = Instance.new("Frame")
 	fila.Size = UDim2.new(1, 0, 0, 42)
 	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
@@ -1050,7 +1050,7 @@ local function makeRowSwitch(parent)
 	label.Size = UDim2.new(1, -80, 1, 0)
 	label.Position = UDim2.new(0, 12, 0, 0)
 	label.BackgroundTransparency = 1
-	label.Text = "Auto Carry Speed"
+	label.Text = labelText or "Auto Carry Speed"
 	label.TextColor3 = Color3.fromRGB(210, 210, 210)
 	label.Font = Enum.Font.Gotham
 	label.TextSize = 12
@@ -1095,19 +1095,61 @@ local function makeRowSwitch(parent)
 			TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}):Play()
 			TweenService:Create(Bolita, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
 		end
+		if callback then
+			callback(activo)
+		end
 	end)
 
 	return fila
 end
 
+-- NUEVO: Helper para botones de acción (como Instant Reset)
+local function makeActionRow(parent, labelText, callback)
+	local fila = Instance.new("TextButton")
+	fila.Size = UDim2.new(1, 0, 0, 36)
+	fila.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	fila.BorderSizePixel = 0
+	fila.Text = ""
+	fila.AutoButtonColor = true
+	fila.Parent = parent
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 8)
+	corner.Parent = fila
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(45, 45, 45)
+	stroke.Thickness = 1
+	stroke.Parent = fila
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, -80, 1, 0)
+	label.Position = UDim2.new(0, 12, 0, 0)
+	label.BackgroundTransparency = 1
+	label.Text = labelText
+	label.TextColor3 = Color3.fromRGB(210, 210, 210)
+	label.Font = Enum.Font.GothamBold
+	label.TextSize = 12
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = fila
+
+	fila.Activated:Connect(callback)
+	return fila
+end
+
 -- ============================================================
--- CONTENIDO DE "MOVEMENT" (índice 1) - ya existente
+-- CONTENIDO DE "MOVEMENT" (índice 1)
 -- ============================================================
 
 local MovementContent = TabContents[1]
 
 makeSectionLabel(MovementContent, "AUTO SPEED")
-makeRowSwitch(MovementContent)
+makeRowSwitch(MovementContent, "Auto Left", function(estado)
+	if estado then startAutoLeft() else stopAutoLeft() end
+end)
+makeRowSwitch(MovementContent, "Auto Right", function(estado)
+	if estado then startAutoRight() else stopAutoRight() end
+end)
 
 makeSectionLabel(MovementContent, "NORMAL SPEED")
 makeRow(MovementContent, "Normal Speed", "63")
@@ -1125,11 +1167,34 @@ makeRow(MovementContent, "TP Bat", "Key: Z")
 makeRow(MovementContent, "TP Player", "Key: C")
 
 -- ============================================================
--- CONTENIDO DE "COMBAT" (índice 2) - VACÍO
+-- CONTENIDO DE "COMBAT" (índice 2) - AHORA CON FUNCIONES
 -- ============================================================
--- local CombatContent = TabContents[2]
--- makeSectionLabel(CombatContent, "...")
--- makeRow(CombatContent, "...", "...")
+
+local CombatContent = TabContents[2]
+
+makeSectionLabel(CombatContent, "COMBAT FEATURES")
+
+makeRowSwitch(CombatContent, "Bat Aimbot", function(estado)
+	if estado then
+		M.queueAutoBatStart()
+	else
+		M.stopBatAimbot()
+	end
+end)
+
+makeRowSwitch(CombatContent, "TP Bat", function(estado)
+	if estado then
+		enableTPBat()
+	else
+		disableTPBat()
+	end
+end)
+
+makeSectionLabel(CombatContent, "ACTIONS")
+
+makeActionRow(CombatContent, "Instant Reset", function()
+	performInstantReset()
+end)
 
 -- ============================================================
 -- CONTENIDO DE "VISUALS" (índice 3) - VACÍO
