@@ -1073,14 +1073,16 @@ startUnwalk=function()
 end
 stopUnwalk=function() local c=LP.Character;if c and unwalkSavedAnimate then unwalkSavedAnimate:Clone().Parent=c;unwalkSavedAnimate=nil end end
 
--- STEAL BAR
+-- STEAL BAR (AZUL DIAMANTE)
 local function createStealBar()
     for _,n in ipairs({"MoveeStealBar"}) do
         local old=game:GetService("CoreGui"):FindFirstChild(n);if old then old:Destroy() end
         local pgui=LP:FindFirstChild("PlayerGui");if pgui then local o=pgui:FindFirstChild(n);if o then o:Destroy() end end
     end
-    local WHITE=Color3.fromRGB(255,255,255)
-    local BARBG=Color3.fromRGB(18,10,15)
+    local DIAMOND=Color3.fromRGB(0, 210, 255)
+    local DIAMOND_GLOW=Color3.fromRGB(0, 240, 255)
+    local DIAMOND_DIM=Color3.fromRGB(0, 130, 180)
+    local BARBG=Color3.fromRGB(10, 25, 40)
     local SB_W,SB_H=330,32
     local stealGui=Instance.new("ScreenGui");stealGui.Name="MoveeStealBar";stealGui.ResetOnSpawn=false;stealGui.IgnoreGuiInset=true;stealGui.DisplayOrder=8
     pcall(function() if syn and syn.protect_gui then syn.protect_gui(stealGui) end end)
@@ -1089,40 +1091,40 @@ local function createStealBar()
     stealBarFrame.Size=UDim2.new(0,SB_W,0,SB_H);stealBarFrame.Position=UDim2.new(0.5,-SB_W/2,0.06,0)
     stealBarFrame.BackgroundColor3=BARBG;stealBarFrame.BorderSizePixel=0;stealBarFrame.ZIndex=20;stealBarFrame.ClipsDescendants=true
     Instance.new("UICorner",stealBarFrame).CornerRadius=UDim.new(1,0)
-    local sbStroke=Instance.new("UIStroke",stealBarFrame);sbStroke.Color=WHITE;sbStroke.Thickness=2;sbStroke.Transparency=0.3
+    local sbStroke=Instance.new("UIStroke",stealBarFrame);sbStroke.Color=DIAMOND;sbStroke.Thickness=2;sbStroke.Transparency=0.3
     task.spawn(function()
         local t=0
         while sbStroke and sbStroke.Parent do
             t=t+0.05
             sbStroke.Transparency=0.2+math.abs(math.sin(t*2))*0.35
-            sbStroke.Color=Color3.fromRGB(255,255,255)
+            sbStroke.Color=DIAMOND_GLOW
             task.wait(0.04)
         end
     end)
     local fillLine=Instance.new("Frame",stealBarFrame);fillLine.Size=UDim2.new(0,0,1,0)
-    fillLine.BackgroundColor3=WHITE;fillLine.BorderSizePixel=0;fillLine.ZIndex=21
+    fillLine.BackgroundColor3=DIAMOND;fillLine.BorderSizePixel=0;fillLine.ZIndex=21
     Instance.new("UICorner",fillLine).CornerRadius=UDim.new(1,0)
     local fillGrad=Instance.new("UIGradient",fillLine)
-    fillGrad.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(200,200,200)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(255,255,255)),ColorSequenceKeypoint.new(1,Color3.fromRGB(200,200,200))})
+    fillGrad.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,DIAMOND_DIM),ColorSequenceKeypoint.new(0.5,DIAMOND_GLOW),ColorSequenceKeypoint.new(1,DIAMOND_DIM)})
     local stealSection=Instance.new("Frame",stealBarFrame)
     stealSection.Size=UDim2.new(0,110,1,0);stealSection.Position=UDim2.new(0,12,0,0)
     stealSection.BackgroundTransparency=1;stealSection.ZIndex=25
     local stealLbl=Instance.new("TextLabel",stealSection)
     stealLbl.Size=UDim2.new(0,55,1,0);stealLbl.Position=UDim2.new(0,0,0,0)
     stealLbl.BackgroundTransparency=1;stealLbl.Text="STEAL"
-    stealLbl.TextColor3=WHITE;stealLbl.Font=Enum.Font.GothamBlack;stealLbl.TextSize=12
+    stealLbl.TextColor3=DIAMOND;stealLbl.Font=Enum.Font.GothamBlack;stealLbl.TextSize=12
     stealLbl.TextXAlignment=Enum.TextXAlignment.Left;stealLbl.ZIndex=26
     local pctLbl=Instance.new("TextLabel",stealSection)
     pctLbl.Size=UDim2.new(0,50,1,0);pctLbl.Position=UDim2.new(0,55,0,0)
     pctLbl.BackgroundTransparency=1;pctLbl.Text="0%"
-    pctLbl.TextColor3=WHITE;pctLbl.Font=Enum.Font.GothamBlack;pctLbl.TextSize=12
+    pctLbl.TextColor3=DIAMOND;pctLbl.Font=Enum.Font.GothamBlack;pctLbl.TextSize=12
     pctLbl.TextXAlignment=Enum.TextXAlignment.Left;pctLbl.ZIndex=26
     local div1=Instance.new("Frame",stealBarFrame);div1.Size=UDim2.new(0,1,0,SB_H*0.5);div1.Position=UDim2.new(0,128,0.5,-(SB_H*0.5)/2)
-    div1.BackgroundColor3=WHITE;div1.BackgroundTransparency=0.6;div1.BorderSizePixel=0;div1.ZIndex=25
+    div1.BackgroundColor3=DIAMOND;div1.BackgroundTransparency=0.6;div1.BorderSizePixel=0;div1.ZIndex=25
     local fpsLbl=Instance.new("TextLabel",stealBarFrame)
     fpsLbl.Size=UDim2.new(0,68,1,0);fpsLbl.Position=UDim2.new(0,138,0,0)
     fpsLbl.BackgroundTransparency=1;fpsLbl.Text="FPS: --"
-    fpsLbl.TextColor3=WHITE;fpsLbl.Font=Enum.Font.GothamBold;fpsLbl.TextSize=10
+    fpsLbl.TextColor3=DIAMOND;fpsLbl.Font=Enum.Font.GothamBold;fpsLbl.TextSize=10
     fpsLbl.TextXAlignment=Enum.TextXAlignment.Left;fpsLbl.ZIndex=26
     task.spawn(function()
         local frames=0;local t0=tick()
@@ -1137,11 +1139,11 @@ local function createStealBar()
         end
     end)
     local div2=Instance.new("Frame",stealBarFrame);div2.Size=UDim2.new(0,1,0,SB_H*0.5);div2.Position=UDim2.new(0,210,0.5,-(SB_H*0.5)/2)
-    div2.BackgroundColor3=WHITE;div2.BackgroundTransparency=0.6;div2.BorderSizePixel=0;div2.ZIndex=25
+    div2.BackgroundColor3=DIAMOND;div2.BackgroundTransparency=0.6;div2.BorderSizePixel=0;div2.ZIndex=25
     local pingLbl=Instance.new("TextLabel",stealBarFrame)
     pingLbl.Size=UDim2.new(0,110,1,0);pingLbl.Position=UDim2.new(0,218,0,0)
     pingLbl.BackgroundTransparency=1;pingLbl.Text="PING: --"
-    pingLbl.TextColor3=WHITE;pingLbl.Font=Enum.Font.GothamBold;pingLbl.TextSize=10
+    pingLbl.TextColor3=DIAMOND;pingLbl.Font=Enum.Font.GothamBold;pingLbl.TextSize=10
     pingLbl.TextXAlignment=Enum.TextXAlignment.Left;pingLbl.ZIndex=26
     task.spawn(function()
         while pingLbl and pingLbl.Parent do
